@@ -10,7 +10,7 @@ export default function Navbar() {
         wrapper="nav"
       >
         <Link href="/">
-          <img className="h-16 object-contain" src="/logo.png" />
+          <img className="h-16 object-contain" src="/logoRotary.png" />
         </Link>
         <div className="flex justify-between items-center gap-6">
           <Link href="/maraton">Maratón</Link>

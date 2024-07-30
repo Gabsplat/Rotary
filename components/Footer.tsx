@@ -9,7 +9,7 @@ export default function Footer() {
       wrapper="footer"
     >
       <Link href="/">
-        <img className="h-24 sm:h-16 object-contain" src="/logo.png" />
+        <img className="h-24 sm:h-16 object-contain" src="/logoRotary.png" />
       </Link>
       <span className="text-sm sm:text-md">
         © 2024 <span className="font-bold">Rotary Mendoza Sur</span>. Todos los
