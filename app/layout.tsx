@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { Open_Sans, Roboto } from "next/font/google";
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={`${open.className} ${roboto.className}`}>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

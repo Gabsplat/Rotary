@@ -6,11 +6,11 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 bg-white">
       <Container
-        className="flex justify-between items-center py-4 text-lg"
+        className="flex justify-between items-center sm:gap-4 py-4 text-lg"
         wrapper="nav"
       >
         <Link href="/">
-          <img className="h-16" src="/logo.png" />
+          <img className="h-16 object-contain" src="/logo.png" />
         </Link>
         <div className="flex justify-between items-center gap-6">
           <Link href="/maraton">Maratón</Link>

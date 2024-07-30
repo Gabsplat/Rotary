@@ -15,22 +15,26 @@ export default function Home() {
 
 function QueHemosHechoMaraton() {
   return (
-    <Container wrapper="section" className="flex items-center gap-28 mt-20">
+    <Container
+      wrapper="section"
+      className="flex flex-col-reverse sm:flex-row items-center gap-4 sm:gap-28 mt-20"
+    >
       <div className="flex-1">
         <h2 className="font-open text-4xl font-light text-blue-rotary">
           Que hemos hecho
         </h2>
-        <p className="text-xl mt-10">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+        <p className="text-xl mt-5 mb-20 sm:mb-0">
+          Nuestro Club Rotary ha transformado vidas en Mendoza al organizar
+          maratones solidarias que han permitido recaudar fondos para
+          proporcionar lentes a numerosos alumnos de colegios locales. Gracias a
+          la colaboración de nuestros miembros y la comunidad, hemos mejorado la
+          visión, el rendimiento académico y la calidad de vida de muchos
+          estudiantes. Con cada paso en nuestras maratones, damos un paso hacia
+          un futuro más brillante para los niños de Mendoza. ¡Seguimos
+          trabajando juntos para construir un mundo mejor!
         </p>
       </div>
-      <div className="w-1/2">
+      <div className="w-full sm:w-1/2">
         <img
           src="https://plus.unsplash.com/premium_photo-1661351646756-f2b55dc1359e?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           className="object-cover rounded-xl"
@@ -42,7 +46,10 @@ function QueHemosHechoMaraton() {
 
 function UbicacionMaraton() {
   return (
-    <Container wrapper="section" className="flex gap-4 mt-20">
+    <Container
+      wrapper="section"
+      className="flex flex-col-reverse sm:flex-row gap-4 mt-20"
+    >
       <div className="flex-1">
         <LandPlot size={48} className="text-blue-rotary" />
         <span className="text-3xl font-open">
@@ -64,7 +71,7 @@ function UbicacionMaraton() {
           </li>
         </ul>
       </div>
-      <div className="w-2/5">
+      <div className="w-full sm:w-2/5">
         <img src="/mapaSM.jpg" className="object-cover" />
       </div>
     </Container>
@@ -117,7 +124,7 @@ function HeroItems() {
           <p className="font-roboto text-xl">
             Participativa <span className="font-bold">2.6KM</span>{" "}
           </p>
-          <span>-</span>
+          <span className="hidden sm:block">-</span>
           <p className="font-roboto text-xl">
             Competitiva <span className="font-bold">10KM</span>
           </p>
