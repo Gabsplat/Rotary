@@ -8,6 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        open: ["var(--font-open)"],
+        roboto: ["var(--font-roboto)"],
+      },
+      colors: {
+        "blue-rotary": "#16478E",
+        "orange-rotary": "#E15F2E",
+        "pink-rotary": "#D41A69",
+        "purple-rotary": "#5E18B8",
+        "green-rotary": "#399918",
+        yellow: "#F9C53F",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
