@@ -86,7 +86,8 @@ function HeroMaraton() {
         <HeroItems />
         <Link
           className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit mt-20"
-          href="#"
+          target="_blank"
+          href="https://www.eventbrite.com.ar/e/maraton-rotaria-10-edicion-tickets-965235624737?aff=oddtdtcreator"
         >
           INSCRIBITE
         </Link>
