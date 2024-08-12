@@ -140,8 +140,8 @@ function QueHemosHechoMaraton() {
           <i>
             últimas <b>10 ediciones</b>
           </i>{" "}
-          de la Maratón Rotaria "Corriendo por la Visión Futura", hemos
-          trabajado incansablemente para{" "}
+          de la Maratón Rotaria &quot;Corriendo por la Visión Futura&quot;,
+          hemos trabajado incansablemente para{" "}
           <b>
             mejorar la salud visual de niños en edad escolar de bajos recursos
             en Mendoza
