@@ -17,3 +17,28 @@ body {
     text-wrap: balance;
   }
 }
+
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide_home {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+  height: 400px;
+}
+
+.embla__container_done {
+  display: flex;
+  gap: 2px;
+}
+
+.embla__slide_done {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+  max-height: 400px;
+}

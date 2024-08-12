@@ -10,15 +10,15 @@ export default function Navbar() {
         wrapper="nav"
       >
         <Link href="/">
-          <img className="h-16 object-contain" src="/logoRotary.png" />
+          <img className="h-12 sm:h-16 object-contain" src="/logoRotary.png" />
         </Link>
-        <div className="flex justify-between items-center gap-6">
+        <div className="flex justify-between items-center gap-3 sm:gap-6">
           <Link href="/maraton">Maratón</Link>
           <Link
-            className="bg-blue-rotary  text-white px-8 py-2 font-bold"
+            className="bg-blue-rotary  text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
             href="#"
           >
-            AFILIATE
+            ASOCIATE
           </Link>
         </div>
       </Container>
