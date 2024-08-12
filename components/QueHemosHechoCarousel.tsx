@@ -2,10 +2,9 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
-import Container from "./Container";
 
 const images: string[] = [
-  "/maraton/controles/foto1.jpg",
+  "/maraton/controles/foto1_fix.jpg",
   "/maraton/controles/foto2.jpg",
   "/maraton/controles/foto3.jpg",
   "/maraton/controles/foto4.jpg",
