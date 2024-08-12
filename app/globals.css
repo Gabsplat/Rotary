@@ -20,15 +20,16 @@ body {
 
 .embla {
   overflow: hidden;
+  height: 600px;
 }
 .embla__container {
   display: flex;
+  height: 100%;
 }
 .embla__slide_home {
   flex: 0 0 100%;
   min-width: 0;
   position: relative;
-  height: 400px;
 }
 
 .embla__container_done {

@@ -4,7 +4,7 @@ import Container from "./Container";
 
 export default function Navbar() {
   return (
-    <nav className="sticky top-0 bg-white">
+    <nav className="sticky top-0 bg-white z-10">
       <Container
         className="flex justify-between items-center sm:gap-4 py-4 text-lg"
         wrapper="nav"

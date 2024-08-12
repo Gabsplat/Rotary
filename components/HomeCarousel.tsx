@@ -2,6 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
+import Link from "next/link";
 import Container from "./Container";
 
 export function HomeCarousel() {
@@ -18,25 +19,21 @@ export function HomeCarousel() {
   );
 
   return (
-    <div className="embla w-full bg-blue-400" ref={emblaRef}>
+    <section className="embla w-full" ref={emblaRef}>
       <div className="embla__container">
         <HomeCarouselSlide
-          titulo="Titulo 1"
-          descripcion="Descripcion 1"
-          urlImg="https://placehold.co/1920x1080"
+          titulo="Maratón 2024"
+          descripcion="Sumate a Corriendo por la Visión Futura. Tu participación este año permitirá que más chicos de Mendoza tengan acceso a una mejor salud visual. ¡Corramos juntos por un futuro más claro!"
+          link="/maraton"
+          urlImg="/maraton/hero.jpg"
         />
-        <HomeCarouselSlide
+        {/* <HomeCarouselSlide
           titulo="Titulo 2"
           descripcion="Descripcion 2"
           urlImg="https://placehold.co/1920x1080"
-        />
-        <HomeCarouselSlide
-          titulo="Titulo 3"
-          descripcion="Descripcion 3"
-          urlImg="https://placehold.co/1920x1080"
-        />
+        /> */}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -44,25 +41,50 @@ const HomeCarouselSlide = ({
   titulo,
   descripcion,
   urlImg,
+  link,
 }: {
   titulo: string;
   descripcion: string;
   urlImg: string;
+  link?: string;
 }) => {
+  if (link) {
+    return (
+      <Link href={link} className="embla__slide_home text-white">
+        <Container className="flex h-full items-end pb-12 md:items-center z-10">
+          <div>
+            <h2 className="font-sans text-5xl mb-4">{titulo}</h2>
+            <p className="md:max-w-[40%] text-lg font-normal">{descripcion}</p>
+          </div>
+        </Container>
+        <img
+          src={urlImg}
+          alt=""
+          className="absolute top-0 left-0 w-full h-full object-cover brightness-50 -z-10"
+        />
+      </Link>
+    );
+  }
+
   return (
     <div
-      className="embla__slide_home"
+      className="embla__slide_home text-white"
       style={{
         backgroundImage: `url(${urlImg})`,
         backgroundSize: "cover",
       }}
     >
-      <Container className="flex h-full items-center">
+      <Container className="flex h-full items-center z-10">
         <div>
           <h2 className="font-sans text-5xl mb-4">{titulo}</h2>
-          <p>{descripcion}</p>
+          <p className="max-w-40">{descripcion}</p>
         </div>
       </Container>
+      <img
+        src={urlImg}
+        alt=""
+        className="absolute top-0 left-0 w-full h-full object-cover brightness-50 -z-10"
+      />
     </div>
   );
 };
