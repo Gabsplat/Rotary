@@ -27,7 +27,7 @@ function HeroMaraton() {
     <section className="flex flex-row items-center gap-4 my-6">
       <section className="w-full sm:w-1/2">
         <img
-          src="/maratonLogo.png"
+          src="/maraton_logo.png"
           alt=""
           className="select-none w-full sm:w-96"
         />
