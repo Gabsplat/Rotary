@@ -138,7 +138,7 @@ function QueHemosHechoMaraton() {
         <p className="text-lg mb-10">
           A lo largo de las{" "}
           <i>
-            últimas <b>10 ediciones</b>
+            últimas <b>9 ediciones</b>
           </i>{" "}
           de la Maratón Rotaria &quot;Corriendo por la Visión Futura&quot;,
           hemos trabajado incansablemente para{" "}

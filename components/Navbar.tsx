@@ -16,7 +16,8 @@ export default function Navbar() {
           <Link href="/maraton">Maratón</Link>
           <Link
             className="bg-blue-rotary  text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
-            href="#"
+            href="https://wa.me/2616557776"
+            target="_blank"
           >
             ASOCIATE
           </Link>
