@@ -118,7 +118,7 @@ function QueEsRotary() {
         </Link>
       </div>
       <img
-        src="/maraton/hero.jpg"
+        src="/servicio_1.jpg"
         alt=""
         className="hidden w-full sm:block md:w-1/2"
       />
