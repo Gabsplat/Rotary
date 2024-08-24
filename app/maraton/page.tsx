@@ -35,7 +35,7 @@ function HeroMaraton() {
         <Link
           className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit mt-20"
           target="_blank"
-          href="https://www.eventbrite.com.ar/e/maraton-rotaria-10-edicion-tickets-965235624737?aff=oddtdtcreator"
+          href="https://www.eventbrite.com.ar/e/maraton-rotaria-10-edicion-tickets-1001609650427"
         >
           INSCRIBITE
         </Link>
@@ -210,7 +210,7 @@ function EscuelasAyudadas() {
       <Link
         className="bg-blue-rotary self-center text-white px-8 sm:px-12 py-2 font-bold block text-center w-full sm:w-fit mt-10 sm:mt-5 "
         target="_blank"
-        href="https://www.eventbrite.com.ar/e/maraton-rotaria-10-edicion-tickets-965235624737?aff=oddtdtcreator"
+        href="https://www.eventbrite.com.ar/e/maraton-rotaria-10-edicion-tickets-1001609650427"
       >
         INSCRIBITE
       </Link>
