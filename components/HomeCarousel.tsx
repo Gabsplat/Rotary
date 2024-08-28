@@ -2,6 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Container from "./Container";
 
@@ -55,6 +56,12 @@ const HomeCarouselSlide = ({
           <div>
             <h2 className="font-sans text-5xl mb-4">{titulo}</h2>
             <p className="md:max-w-[40%] text-lg font-normal">{descripcion}</p>
+            <Link
+              className="bg-blue-rotary mt-4 inline-block text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
+              href="/maraton"
+            >
+              INSCRIBITE ACÁ <ExternalLink size={16} className="inline ml-2" />
+            </Link>
           </div>
         </Container>
         <img
