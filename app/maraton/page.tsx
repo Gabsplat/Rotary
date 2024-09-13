@@ -13,6 +13,7 @@ export default function Home() {
       <Container className="min-h-screen">
         <HeroMaraton />
         <div className="block h-1 bg-slate-100 mt-20"></div>
+        <KitsMaraton />
         <UbicacionMaraton />
         <QueHemosHechoMaraton />
         {/* <SchoolsCarousel /> */}
@@ -32,7 +33,7 @@ function HeroMaraton() {
           className="select-none w-full sm:w-96"
         />
         <HeroItems />
-        <div className="mt-20 flex gap-4">
+        <div className="mt-20 flex flex-col sm:flex-row gap-4">
           <Link
             className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit "
             target="_blank"
@@ -133,6 +134,24 @@ function UbicacionMaraton() {
       </div>
       <div className="w-full sm:w-2/5">
         <img src="/mapaSM.jpg" className="object-cover" />
+      </div>
+    </section>
+  );
+}
+function KitsMaraton() {
+  return (
+    <section className="flex flex-col-reverse sm:flex-row gap-4 mt-10 sm:mt-20">
+      <div className="flex-1">
+        <LandPlot className="text-blue-rotary w-8 h-8 sm:w-10 sm:h-10 mb-3" />
+        <span className="text-2xl sm:text-3xl font-open">
+          <span className="font-bold">Entrega de kits</span> <br />
+          <span className="font-medium">
+            Rosedal, Parque General San Martín
+          </span>{" "}
+        </span>
+      </div>
+      <div className="w-full sm:w-3/5">
+        <img src="/mapaKITS.jpeg" className="object-cover" />
       </div>
     </section>
   );
