@@ -3,7 +3,7 @@ import {
   default as QueHemosHechoCarousel,
   default as SchoolsCarousel,
 } from "@/components/QueHemosHechoCarousel";
-import { Calendar, LandPlot, Medal } from "lucide-react";
+import { Calendar, ExternalLink, LandPlot, Medal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -32,13 +32,23 @@ function HeroMaraton() {
           className="select-none w-full sm:w-96"
         />
         <HeroItems />
-        <Link
-          className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit mt-20"
-          target="_blank"
-          href="https://www.entradaweb.com.ar/evento/3a1e29dd/step/1"
-        >
-          INSCRIBITE
-        </Link>
+        <div className="mt-20 flex gap-4">
+          <Link
+            className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit "
+            target="_blank"
+            href="https://www.entradaweb.com.ar/evento/3a1e29dd/step/1"
+          >
+            INSCRIBITE
+          </Link>
+          <a
+            className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit"
+            target="_blank"
+            href="/deslinde_responsabilidad.pdf"
+          >
+            DESLINDE DE RESPONSABILIDAD{" "}
+            <ExternalLink size={16} className="inline" />
+          </a>
+        </div>
       </section>
       <aside className="hidden flex-1 sm:block -mr-[10%] h-full">
         <img src="/maraton/hero.jpg" alt="" className="rounded-l-2xl" />
