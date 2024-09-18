@@ -33,22 +33,26 @@ function HeroMaraton() {
           className="select-none w-full sm:w-96"
         />
         <HeroItems />
-        <div className="mt-20 flex flex-col sm:flex-row gap-4">
-          <Link
-            className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit "
-            target="_blank"
-            href="https://www.entradaweb.com.ar/evento/3a1e29dd/step/1"
-          >
-            INSCRIBITE
-          </Link>
-          <a
-            className="bg-blue-rotary  text-white px-8 py-2 font-bold block text-center w-full sm:w-fit"
-            target="_blank"
-            href="/deslinde_responsabilidad.pdf"
-          >
-            DESLINDE DE RESPONSABILIDAD{" "}
-            <ExternalLink size={16} className="inline" />
-          </a>
+        <div className="w-2/3">
+          <div className="h-16 w-full bg-orange-rotary mt-10 flex items-center justify-center text-white">
+            <span className="text-2xl font-bold">¡MARATÓN FINALIZADA!</span>
+          </div>
+          <div className="mt-4 flex flex-col sm:flex-row justify-between gap-4">
+            <Link
+              className="bg-gray-400 cursor-default  text-white px-6 py-2 font-bold block text-center w-full"
+              // target="_blank"
+              href="#"
+            >
+              FOTOS DEL EVENTO <ExternalLink size={16} className="inline" />
+            </Link>
+            <a
+              className="bg-blue-rotary text-white px-8 py-2 font-bold block text-center w-full"
+              target="_blank"
+              href="https://drive.google.com/file/d/1nRUqwkYEowq116pMi8VmZ75V2iEJdyzx/view?usp=sharing"
+            >
+              RESULTADOS <ExternalLink size={16} className="inline" />
+            </a>
+          </div>
         </div>
       </section>
       <aside className="hidden flex-1 sm:block -mr-[10%] h-full">
@@ -236,13 +240,6 @@ function EscuelasAyudadas() {
           <b>Hermana Sara Molina</b>
         </li>
       </ul>
-      <Link
-        className="bg-blue-rotary self-center text-white px-8 sm:px-12 py-2 font-bold block text-center w-full sm:w-fit mt-10 sm:mt-5 "
-        target="_blank"
-        href="https://www.entradaweb.com.ar/evento/3a1e29dd/step/1"
-      >
-        INSCRIBITE
-      </Link>
     </section>
   );
 }

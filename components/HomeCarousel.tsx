@@ -24,7 +24,7 @@ export function HomeCarousel() {
       <div className="embla__container">
         <HomeCarouselSlide
           titulo="Maratón 2024"
-          descripcion="Sumate a Corriendo por la Visión Futura. Tu participación este año permitirá que más chicos de Mendoza tengan acceso a una mejor salud visual. ¡Corramos juntos por un futuro más claro!"
+          descripcion="Gracias por participar en Corriendo por la Visión Futura. Tu apoyo este año permitió que más chicos de Mendoza tengan acceso a una mejor salud visual. ¡Juntos corrimos por un futuro más claro!"
           link="/maraton"
           urlImg="/maraton/hero.jpg"
         />
@@ -60,7 +60,8 @@ const HomeCarouselSlide = ({
               className="bg-blue-rotary mt-4 inline-block text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
               href="/maraton"
             >
-              INSCRIBITE ACÁ <ExternalLink size={16} className="inline ml-2" />
+              REVIVI LA MARATÓN{" "}
+              <ExternalLink size={16} className="inline ml-2" />
             </Link>
           </div>
         </Container>
