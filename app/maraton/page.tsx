@@ -33,15 +33,15 @@ function HeroMaraton() {
           className="select-none w-full sm:w-96"
         />
         <HeroItems />
-        <div className="w-2/3">
-          <div className="h-16 w-full bg-orange-rotary mt-10 flex items-center justify-center text-white">
+        <div className="w-full sm:w-2/3">
+          <div className="h-16 w-full bg-orange-rotary mt-10 flex items-center justify-center text-white shadow-md shadow-orange-rotary/50">
             <span className="text-2xl font-bold">¡MARATÓN FINALIZADA!</span>
           </div>
           <div className="mt-4 flex flex-col sm:flex-row justify-between gap-4">
             <Link
-              className="bg-gray-400 cursor-default  text-white px-6 py-2 font-bold block text-center w-full"
-              // target="_blank"
-              href="#"
+              className="bg-blue-rotary text-white px-6 py-2 font-bold block text-center w-full"
+              target="_blank"
+              href="https://drive.google.com/drive/folders/1dLb3Qy6ett6l9dSPZq2rITPstvwxHamv?usp=sharing"
             >
               FOTOS DEL EVENTO <ExternalLink size={16} className="inline" />
             </Link>
