@@ -22,11 +22,17 @@ export function HomeCarousel() {
   return (
     <section className="embla w-full" ref={emblaRef}>
       <div className="embla__container">
-        <HomeCarouselSlide
+        {/* <HomeCarouselSlide
           titulo="Maratón 2024"
           descripcion="Gracias por participar en Corriendo por la Visión Futura. Tu apoyo este año permitió que más chicos de Mendoza tengan acceso a una mejor salud visual. ¡Juntos corrimos por un futuro más claro!"
           link="/maraton"
           urlImg="/maraton/hero.jpg"
+        /> */}
+        <HomeCarouselSlide
+          titulo="Maratón 2026"
+          descripcion="¡Vuelve el evento que nos une! Preparate para recorrer Mendoza y superar tus propios límites en una nueva edición solidaria."
+          link="/maraton-2026"
+          urlImg="/maraton-2026/carousel.jpeg"
         />
         {/* <HomeCarouselSlide
           titulo="Titulo 2"
@@ -51,26 +57,25 @@ const HomeCarouselSlide = ({
 }) => {
   if (link) {
     return (
-      <Link href={link} className="embla__slide_home text-white">
+      <div className="embla__slide_home text-white bg-gradient-to-t md:bg-gradient-to-r from-blue-rotary to-transparent">
         <Container className="flex h-full items-end pb-12 md:items-center z-10">
           <div>
-            <h2 className="font-sans text-5xl mb-4">{titulo}</h2>
-            <p className="md:max-w-[40%] text-lg font-normal">{descripcion}</p>
+            <h2 className="font-sans font-semibold text-5xl mb-4">{titulo}</h2>
+            <p className="md:max-w-[50%] text-lg font-normal">{descripcion}</p>
             <Link
-              className="bg-blue-rotary mt-4 inline-block text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
-              href="/maraton"
+              className="bg-white mt-4 inline-block text-blue-rotary px-4 sm:px-8 py-2 sm:py-3 font-semibold sm:font-bold hover:scale-105 transition-all duration-300"
+              href={link}
             >
-              REVIVI LA MARATÓN{" "}
-              <ExternalLink size={16} className="inline ml-2" />
+              VER MÁS <ExternalLink size={16} className="inline ml-2" />
             </Link>
           </div>
         </Container>
         <img
           src={urlImg}
           alt=""
-          className="absolute top-0 left-0 w-full h-full object-cover brightness-50 -z-10"
+          className="absolute top-0 left-0 w-full h-full object-cover brightness-90 -z-10"
         />
-      </Link>
+      </div>
     );
   }
 

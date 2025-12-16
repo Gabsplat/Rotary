@@ -86,7 +86,7 @@ function QueEsRotary() {
   return (
     <Container
       wrapper="section"
-      className="flex flex-col-reverse md:flex-row items-center gap-4 sm:gap-10 md:gap-28 mt-20"
+      className="flex flex-col-reverse md:flex-row items-start gap-4 sm:gap-10 md:gap-28 mt-20"
     >
       <div className="flex-1 flex flex-col">
         <h2 className="font-open text-3xl sm:text-4xl font-medium text-blue-rotary mt-3 mb-4 sm:mt-0">
@@ -120,7 +120,7 @@ function QueEsRotary() {
       <img
         src="/servicio_1.jpg"
         alt=""
-        className="hidden w-full sm:block md:w-1/2"
+        className="hidden w-full sm:block h-[500px] md:w-1/2 object-cover"
       />
     </Container>
   );

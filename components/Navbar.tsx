@@ -11,9 +11,9 @@ export default function Navbar() {
   console.log("pathname", pathname);
 
   return (
-    <nav className="sticky top-0 bg-white z-10">
+    <nav className="sticky top-0 bg-white z-50 border-b border-slate-200">
       <Container
-        className="flex justify-between items-center sm:gap-4 py-4 text-lg"
+        className="flex justify-between items-center sm:gap-4 py-6 text-lg"
         wrapper="nav"
       >
         <Link href="/">
@@ -29,8 +29,8 @@ export default function Navbar() {
           </Link>
           {pathname !== "/maraton" && (
             <Link
-              className="bg-blue-rotary  text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold"
-              href="/maraton"
+              className="bg-blue-rotary  text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold hover:scale-105 transition-all duration-300"
+              href="/maraton-2026"
             >
               MARATÓN
             </Link>
