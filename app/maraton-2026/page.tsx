@@ -74,7 +74,7 @@ function HeroMaraton() {
         {/* CTA Button */}
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
-            href="#"
+            href="https://www.entradaweb.com.ar/evento/e262f38c/step/1"
             target="_blank"
             className="group relative overflow-hidden bg-gradient-to-r from-orange-rotary to-orange-500 px-10 py-5 text-white font-bold text-xl shadow-lg shadow-orange-rotary/30 hover:shadow-xl hover:shadow-orange-rotary/40 transition-all duration-300 hover:-translate-y-1"
           >
