@@ -28,7 +28,7 @@ export default function QueHemosHechoCarousel() {
   );
 
   return (
-    <div className="embla w-full mt-10" ref={emblaRef}>
+    <div className="embla w-full" ref={emblaRef}>
       <div className="embla__container_done">
         {images.map((urlImg, index) => (
           <CarouselSlide key={index} urlImg={urlImg} />
@@ -41,7 +41,7 @@ export default function QueHemosHechoCarousel() {
 const CarouselSlide = ({ urlImg }: { urlImg: string }) => {
   return (
     <div className="embla__slide_done overflow-hidden">
-      <img src={urlImg} alt="" className="object-cover" />
+      <img src={urlImg} alt="" className="h-full w-full object-cover" />
     </div>
   );
 };
