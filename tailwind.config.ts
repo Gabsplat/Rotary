@@ -9,21 +9,24 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        open: ["var(--font-open)"],
-        roboto: ["var(--font-roboto)"],
+        open: ["var(--font-open)", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       colors: {
-        "blue-rotary": "#16478E",
-        "orange-rotary": "#E15F2E",
-        "pink-rotary": "#D41A69",
-        "purple-rotary": "#5E18B8",
-        "green-rotary": "#399918",
-        yellow: "#F9C53F",
+        ink: "#0B1B3A",
+        paper: "#F5F1E8",
+        "blue-rotary": "#17458F",
+        "gold-rotary": "#F7A81B",
+        "azure-rotary": "#005DAA",
       },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      keyframes: {
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        marquee: "marquee 40s linear infinite",
       },
     },
   },

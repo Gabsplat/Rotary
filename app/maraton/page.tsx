@@ -1,245 +1,228 @@
 import Container from "@/components/Container";
-import {
-  default as QueHemosHechoCarousel,
-  default as SchoolsCarousel,
-} from "@/components/QueHemosHechoCarousel";
-import { Calendar, ExternalLink, LandPlot, Medal } from "lucide-react";
+import QueHemosHechoCarousel from "@/components/QueHemosHechoCarousel";
+import Reveal from "@/components/Reveal";
+import { Eyebrow, PillLink } from "@/components/ui";
 import Image from "next/image";
-import Link from "next/link";
+
+const escuelas = [
+  ["N° 1-127", "Elías Villanueva"],
+  ["N° 1-525", "Ramón Rosales"],
+  ["N° 1-4160", "Tito Francia"],
+  ["J-051", "Jardín Garabatos"],
+  ["Barrio La Favorita", "Carlos Berdasco"],
+  ["Provincia de Mendoza", "Flavio Ferraris"],
+  ["Nº 1-557", "Cerro de la Gloria"],
+  ["", "Hermana Sara Molina"],
+];
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
-      <Container className="min-h-screen">
-        <HeroMaraton />
-        <div className="block h-1 bg-slate-100 mt-20"></div>
-        <KitsMaraton />
-        <UbicacionMaraton />
-        <QueHemosHechoMaraton />
-        {/* <SchoolsCarousel /> */}
-        <EscuelasAyudadas />
-      </Container>
+      <HeroMaraton />
+      <Recorrido />
+      <QueHemosHechoMaraton />
+      <EscuelasAyudadas />
     </main>
   );
 }
 
 function HeroMaraton() {
   return (
-    <section className="flex flex-row items-center gap-4 my-6">
-      <section className="w-full sm:w-1/2">
-        <img
-          src="/maraton_logo.png"
-          alt=""
-          className="select-none w-full sm:w-96"
-        />
-        <HeroItems />
-        <div className="w-full sm:w-2/3">
-          <div className="h-16 w-full bg-orange-rotary mt-10 flex items-center justify-center text-white shadow-md shadow-orange-rotary/50">
-            <span className="text-2xl font-bold">¡MARATÓN FINALIZADA!</span>
-          </div>
-          <div className="mt-4 flex flex-col sm:flex-row justify-between gap-4">
-            <Link
-              className="bg-blue-rotary text-white px-6 py-2 font-bold block text-center w-full"
-              target="_blank"
-              href="https://drive.google.com/drive/folders/1dLb3Qy6ett6l9dSPZq2rITPstvwxHamv?usp=sharing"
-            >
-              FOTOS DEL EVENTO <ExternalLink size={16} className="inline" />
-            </Link>
-            <a
-              className="bg-blue-rotary text-white px-8 py-2 font-bold block text-center w-full"
-              target="_blank"
-              href="https://drive.google.com/file/d/1nRUqwkYEowq116pMi8VmZ75V2iEJdyzx/view?usp=sharing"
-            >
-              RESULTADOS <ExternalLink size={16} className="inline" />
-            </a>
-          </div>
+    <section>
+      <Container className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10 pt-12 pb-20 lg:pt-20 lg:pb-28">
+        <div className="lg:col-span-6">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white">
+              <span className="h-2 w-2 rounded-full bg-gold-rotary" />
+              Maratón finalizada
+            </span>
+            <h1 className="mt-8">
+              <img
+                src="/maraton_logo.png"
+                alt="Maratón Rotaria"
+                className="w-full max-w-sm select-none"
+              />
+            </h1>
+          </Reveal>
+          <Reveal delay={120}>
+            <dl className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+              <Dato etiqueta="Fecha" valor="15 de septiembre, 9 hs" />
+              <Dato
+                etiqueta="Largada"
+                valor="Parque General San Martín, Mendoza"
+              />
+              <Dato
+                etiqueta="Categorías"
+                valor="Participativa 2.6 km · Competitiva 10 km"
+              />
+            </dl>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <PillLink
+                href="https://drive.google.com/drive/folders/1dLb3Qy6ett6l9dSPZq2rITPstvwxHamv?usp=sharing"
+                externo
+              >
+                Fotos del evento
+              </PillLink>
+              <PillLink
+                href="https://drive.google.com/file/d/1nRUqwkYEowq116pMi8VmZ75V2iEJdyzx/view?usp=sharing"
+                externo
+                variante="outline"
+              >
+                Resultados
+              </PillLink>
+            </div>
+          </Reveal>
         </div>
-      </section>
-      <aside className="hidden flex-1 sm:block -mr-[10%] h-full">
-        <img src="/maraton/hero.jpg" alt="" className="rounded-l-2xl" />
-      </aside>
+        <Reveal className="lg:col-span-5 lg:col-start-8" delay={200}>
+          <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl">
+            <Image
+              src="/maraton/hero.jpg"
+              alt="Corredores en la largada de la Maratón Rotaria"
+              fill
+              priority
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </Reveal>
+      </Container>
     </section>
   );
 }
 
-function HeroItems() {
+function Dato({ etiqueta, valor }: { etiqueta: string; valor: string }) {
   return (
-    <div className="flex flex-col gap-10 mt-10">
-      <div>
-        <div className="flex gap-2 items-center mb-2">
-          <LandPlot size={28} className="text-blue-rotary" />
-          <span className="text-blue-rotary font-bold text-md sm:text-lg">
-            LARGADA
-          </span>
-        </div>
-        <p className="font-roboto font-bold text-lg sm:text-xl">
-          Parque General San Martín, Mendoza
-        </p>
-      </div>
-      <div>
-        <div className="flex gap-2 items-center mb-2">
-          <Calendar size={28} className="text-blue-rotary" />
-          <span className="text-blue-rotary font-bold text-md sm:text-lg">
-            FECHA
-          </span>
-        </div>
-        <p className="font-roboto font-bold text-lg sm:text-xl">
-          15 de Septiembre, 9hs
-        </p>
-      </div>
-      <div>
-        <div className="flex gap-2 items-center mb-2">
-          <Medal size={28} className="text-blue-rotary" />
-          <span className="text-blue-rotary font-bold text-md sm:text-lg">
-            CATEGORÍAS
-          </span>
-        </div>
-        <div className="flex flex-row gap-4">
-          <p className="font-roboto text-lg sm:text-xl">
-            Participativa <span className="font-bold">2.6KM</span>{" "}
-          </p>
-          <span className="hidden sm:block">-</span>
-          <p className="font-roboto text-lg sm:text-xl">
-            Competitiva <span className="font-bold">10KM</span>
-          </p>
-        </div>
-      </div>
+    <div className="flex items-baseline justify-between gap-6 py-4">
+      <dt className="text-xs font-bold uppercase tracking-[0.22em] text-ink/50">
+        {etiqueta}
+      </dt>
+      <dd className="text-right font-display text-xl sm:text-2xl tracking-tight">
+        {valor}
+      </dd>
     </div>
   );
 }
 
-function UbicacionMaraton() {
+function Recorrido() {
   return (
-    <section className="flex flex-col-reverse sm:flex-row gap-4 mt-10 sm:mt-20">
-      <div className="flex-1">
-        <LandPlot className="text-blue-rotary w-8 h-8 sm:w-10 sm:h-10 mb-3" />
-        <span className="text-2xl sm:text-3xl font-open">
-          <span className="font-bold">Rosedal</span> <br />{" "}
-          <span className="font-semibold">Parque General San Martín,</span>{" "}
-          <br />
-          Mendoza
-        </span>
-        <ul className="space-y-1 text-lg list-disc list-inside mt-4">
-          <li>
-            Categoría{" "}
-            <span className="text-pink-rotary font-bold">
-              Participativa de 2.6KM
-            </span>{" "}
-            alrededor del lago
-          </li>
-          <li>
-            Categoría{" "}
-            <span className="text-pink-rotary font-bold">
-              Competitiva de 10KM
-            </span>{" "}
-            atravesando más zonas del parque
-          </li>
-        </ul>
-      </div>
-      <div className="w-full sm:w-2/5">
-        <img src="/mapaSM.jpg" className="object-cover" />
-      </div>
+    <section className="bg-white py-24 sm:py-32">
+      <Container>
+        <Reveal>
+          <Eyebrow>Recorrido</Eyebrow>
+          <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.02] tracking-tight">
+            Rosedal, Parque General{" "}
+            <span className="italic text-blue-rotary">San Martín.</span>
+          </h2>
+        </Reveal>
+        <div className="mt-14 grid gap-5 lg:grid-cols-2">
+          <Reveal>
+            <Mapa
+              src="/mapaSM.jpg"
+              alt="Mapa del recorrido de la maratón"
+              titulo="Circuito"
+            >
+              Categoría <b>Participativa de 2.6 km</b> alrededor del lago y{" "}
+              <b>Competitiva de 10 km</b> atravesando más zonas del parque.
+            </Mapa>
+          </Reveal>
+          <Reveal delay={120}>
+            <Mapa
+              src="/mapaKITS.jpeg"
+              alt="Mapa del punto de entrega de kits"
+              titulo="Entrega de kits"
+            >
+              Rosedal, Parque General San Martín.
+            </Mapa>
+          </Reveal>
+        </div>
+      </Container>
     </section>
   );
 }
-function KitsMaraton() {
+
+function Mapa({
+  src,
+  alt,
+  titulo,
+  children,
+}: {
+  src: string;
+  alt: string;
+  titulo: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section className="flex flex-col-reverse sm:flex-row gap-4 mt-10 sm:mt-20">
-      <div className="flex-1">
-        <LandPlot className="text-blue-rotary w-8 h-8 sm:w-10 sm:h-10 mb-3" />
-        <span className="text-2xl sm:text-3xl font-open">
-          <span className="font-bold">Entrega de kits</span> <br />
-          <span className="font-medium">
-            Rosedal, Parque General San Martín
-          </span>{" "}
-        </span>
+    <article className="h-full overflow-hidden rounded-3xl bg-paper">
+      <img src={src} alt={alt} className="h-72 sm:h-96 w-full object-cover" />
+      <div className="p-7 sm:p-9">
+        <h3 className="font-display text-2xl sm:text-3xl tracking-tight">
+          {titulo}
+        </h3>
+        <p className="mt-3 leading-relaxed text-ink/70">{children}</p>
       </div>
-      <div className="w-full sm:w-3/5">
-        <img src="/mapaKITS.jpeg" className="object-cover" />
-      </div>
-    </section>
+    </article>
   );
 }
 
 function QueHemosHechoMaraton() {
   return (
-    <section className="flex flex-col-reverse sm:flex-row items-center gap-4 sm:gap-28 mt-20">
-      <div className="flex-1">
-        <h2 className="font-open text-3xl sm:text-4xl font-medium text-blue-rotary mt-3 mb-4 sm:mt-0">
-          Qué hemos hecho
-        </h2>
-        <p className="text-lg mb-10">
-          A lo largo de las{" "}
-          <i>
-            últimas <b>9 ediciones</b>
-          </i>{" "}
-          de la Maratón Rotaria &quot;Corriendo por la Visión Futura&quot;,
-          hemos trabajado incansablemente para{" "}
-          <b>
-            mejorar la salud visual de niños en edad escolar de bajos recursos
-            en Mendoza
-          </b>
-          . Gracias al compromiso y la generosidad de nuestra comunidad, hemos
-          logrado detectar y resolver problemas de visión en cientos de
-          pequeños, brindándoles una mejor oportunidad para un desarrollo
-          educativo pleno. Hasta la fecha,{" "}
-          <b>
-            hemos entregado más de 300 anteojos a alumnos de diversas escuelas
-            primarias
-          </b>
-          , ayudándolos a ver un futuro más claro y prometedor.
-        </p>
-        <p className="text-lg mt-2 sm:mt-5 sm:mb-0 ">
-          Este año,{" "}
-          <b>
-            nuestra misión continúa con un enfoque especial en los estudiantes
-            de la Escuela N° 1-580 Dr. Carlos Padín
-          </b>
-          . Necesitamos nuevamente de tu solidaridad para seguir haciendo una
-          diferencia real en la vida de estos niños, asegurando que cada uno de
-          ellos reciba el apoyo visual que necesita para alcanzar su
-          máximo potencial.
-        </p>
-      </div>
-      <div className="w-full sm:w-1/2">
-        <QueHemosHechoCarousel />
-      </div>
+    <section className="py-24 sm:py-32">
+      <Container className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+        <Reveal className="lg:col-span-6">
+          <Eyebrow>Qué hemos hecho</Eyebrow>
+          <h2 className="mt-6 font-display text-4xl sm:text-5xl leading-[1.05] tracking-tight text-balance">
+            Más de 300 anteojos para alumnos de escuelas primarias.
+          </h2>
+          <p className="mt-8 text-lg leading-relaxed text-ink/70">
+            A lo largo de las últimas <b>9 ediciones</b> de la Maratón Rotaria
+            &quot;Corriendo por la Visión Futura&quot;, hemos trabajado
+            incansablemente para mejorar la salud visual de niños en edad
+            escolar de bajos recursos en Mendoza. Gracias al compromiso y la
+            generosidad de nuestra comunidad, logramos detectar y resolver
+            problemas de visión en cientos de pequeños.
+          </p>
+          <p className="mt-5 text-lg leading-relaxed text-ink/70">
+            Este año, nuestra misión continúa con un enfoque especial en los
+            estudiantes de la <b>Escuela N° 1-580 Dr. Carlos Padín</b>.
+            Necesitamos nuevamente de tu solidaridad para asegurar que cada
+            uno de ellos reciba el apoyo visual que necesita.
+          </p>
+        </Reveal>
+        <Reveal className="lg:col-span-5 lg:col-start-8" delay={150}>
+          <div className="overflow-hidden rounded-3xl">
+            <QueHemosHechoCarousel />
+          </div>
+        </Reveal>
+      </Container>
     </section>
   );
 }
 
 function EscuelasAyudadas() {
   return (
-    <section className="mb-10 flex flex-col">
-      <h3 className="font-open text-2xl font-light text-blue-rotary mt-6 sm:mt-12">
-        Escuelas beneficiadas
-      </h3>
-      <ul className="space-y-1 list-disc list-inside mt-2">
-        <li>
-          N° 1-127, <b>Elías Villanueva</b>
-        </li>
-        <li>
-          N° 1-525 <b>Ramón Rosales</b>
-        </li>
-        <li>
-          N° 1-4160, <b>Tito Francia</b>
-        </li>
-        <li>
-          J-051, <b>Jardín Garabatos</b>
-        </li>
-        <li>
-          <b>Carlos Berdasco</b>, Barrio La Favorita
-        </li>
-        <li>
-          <b>Flavio Ferraris</b>, Provincia de Mendoza{" "}
-        </li>
-        <li>
-          Nº 1-557, <b>Cerro de la Gloria</b>
-        </li>
-        <li>
-          <b>Hermana Sara Molina</b>
-        </li>
-      </ul>
+    <section className="bg-ink text-white">
+      <Container className="grid gap-12 lg:grid-cols-12 py-24 sm:py-32">
+        <div className="lg:col-span-4">
+          <Eyebrow dark>Escuelas beneficiadas</Eyebrow>
+        </div>
+        <Reveal className="lg:col-span-8">
+          <ul className="grid sm:grid-cols-2 gap-x-10 border-t border-white/15">
+            {escuelas.map(([detalle, nombre]) => (
+              <li
+                key={nombre}
+                className="flex items-baseline justify-between gap-4 border-b border-white/15 py-4"
+              >
+                <span className="font-display text-xl tracking-tight">
+                  {nombre}
+                </span>
+                <span className="text-right text-sm text-white/50">
+                  {detalle}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </Container>
     </section>
   );
 }

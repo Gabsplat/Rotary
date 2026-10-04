@@ -1,42 +1,84 @@
 "use client";
 
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import Container from "./Container";
+import { PillLink, WHATSAPP } from "./ui";
+
+const links = [
+  { href: "/#proyectos", label: "Proyectos" },
+  { href: "/#sumarte", label: "Por qué sumarte" },
+  { href: "/#club", label: "El club" },
+  { href: "/maraton-2026", label: "Maratón" },
+];
 
 export default function Navbar() {
-  const pathname = usePathname();
-
-  console.log("pathname", pathname);
+  const [abierto, setAbierto] = useState(false);
 
   return (
-    <nav className="sticky top-0 bg-white z-50 border-b border-slate-200">
+    <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/85 backdrop-blur-md">
       <Container
-        className="flex justify-between items-center sm:gap-4 py-6 text-lg"
         wrapper="nav"
+        className="flex items-center justify-between gap-6 py-3"
       >
-        <Link href="/">
-          <img className="h-12 sm:h-16 object-contain" src="/logoRotary.png" />
+        <Link href="/" onClick={() => setAbierto(false)}>
+          <img
+            className="h-11 sm:h-12 object-contain"
+            src="/logoRotary.png"
+            alt="Rotary Club Mendoza Sur"
+          />
         </Link>
-        <div className="flex justify-between items-center gap-3 sm:gap-6">
-          <Link
-            className="font-semibold sm:font-bold"
-            href="https://wa.me/2616557776"
-            target="_blank"
+        <ul className="hidden lg:flex items-center gap-9">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                className="text-sm font-semibold text-ink/70 hover:text-ink transition-colors"
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="flex items-center gap-3">
+          <PillLink
+            href={WHATSAPP}
+            externo
+            className="!px-5 !py-2.5 hidden sm:inline-flex"
           >
-            Asociate
-          </Link>
-          {pathname !== "/maraton" && (
-            <Link
-              className="bg-blue-rotary  text-white px-3 sm:px-8 py-1 sm:py-2 font-semibold sm:font-bold hover:scale-105 transition-all duration-300"
-              href="/maraton-2026"
-            >
-              MARATÓN
-            </Link>
-          )}
+            Sumate
+          </PillLink>
+          <button
+            className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full border border-ink/15"
+            aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={abierto}
+            onClick={() => setAbierto(!abierto)}
+          >
+            {abierto ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </Container>
-    </nav>
+      {abierto && (
+        <Container className="lg:hidden pb-6">
+          <ul className="border-t border-ink/10">
+            {links.map((link) => (
+              <li key={link.href} className="border-b border-ink/10">
+                <Link
+                  className="block py-4 font-display text-2xl"
+                  href={link.href}
+                  onClick={() => setAbierto(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <PillLink href={WHATSAPP} externo className="mt-6 w-full">
+            Sumate al club
+          </PillLink>
+        </Container>
+      )}
+    </header>
   );
 }

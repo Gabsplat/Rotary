@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #f7a81b;
+  color: #0b1b3a;
 }
 
 @layer utilities {
@@ -18,28 +17,40 @@ body {
   }
 }
 
-.embla {
-  overflow: hidden;
-  height: 600px;
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.embla__container {
-  display: flex;
-  height: 100%;
-}
-.embla__slide_home {
-  flex: 0 0 100%;
-  min-width: 0;
-  position: relative;
+.reveal-in {
+  opacity: 1;
+  transform: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+.embla {
+  overflow: hidden;
+}
 .embla__container_done {
   display: flex;
   gap: 2px;
 }
-
 .embla__slide_done {
   flex: 0 0 100%;
   min-width: 0;
   position: relative;
-  max-height: 400px;
+  aspect-ratio: 4 / 3;
 }

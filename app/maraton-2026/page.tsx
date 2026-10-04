@@ -1,288 +1,399 @@
-"use client";
-
 import Container from "@/components/Container";
-import {
-  Calendar,
-  Clock,
-  ExternalLink,
-  LandPlot,
-  MapPin,
-  Medal,
-  Timer,
-  Users,
-} from "lucide-react";
+import Reveal from "@/components/Reveal";
+import { Eyebrow, PillLink, WHATSAPP } from "@/components/ui";
+import { Download } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import Galeria from "./Galeria";
+import Resultados from "./Resultados";
+
+const NOTA = "https://mendozacorre.com/los-rotarios-corrieron-por-la-infancia/";
+const FOTOS = "/maraton-2026/galeria";
 
 export default function Page() {
   return (
-    <main className="overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-orange-50/20 min-h-screen">
-      {/* Decorative background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-rotary/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-orange-rotary/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-pink-rotary/5 rounded-full blur-3xl" />
-      </div>
-
-      <Container className="relative z-10 py-8 md:py-12">
-        <HeroMaraton />
-        <InfoCards />
-        <CountdownSection />
-      </Container>
+    <main className="overflow-hidden">
+      <HeroMaraton />
+      <Cronica />
+      <Podios />
+      <Clasificacion />
+      <Fotos />
+      <Mision />
     </main>
   );
 }
 
 function HeroMaraton() {
   return (
-    <section className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-      {/* Left Content */}
-      <section className="w-full lg:w-1/2 order-2 lg:order-1">
-        {/* Edition Badge */}
-        <div className="inline-flex items-baseline gap-3 mb-6">
-          <img
-            src="/maraton-2026/logo.svg"
-            alt="Maratón Rotaria 2026"
-            className="h-28 object-contain"
-          />
-        </div>
-        {/* <div className="inline-flex items-baseline gap-3 mb-6">
-          <div className="relative">
-            <span className="text-7xl sm:text-8xl lg:text-9xl font-black text-blue-rotary leading-none">
-              11
+    <section>
+      <Container className="grid items-center gap-12 lg:grid-cols-12 lg:gap-10 pt-12 pb-20 lg:pt-20 lg:pb-28">
+        <div className="lg:col-span-6">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-white">
+              <span className="h-2 w-2 rounded-full bg-gold-rotary" />
+              Maratón finalizada
             </span>
-            <span className="absolute -top-2 -right-8 text-2xl sm:text-3xl font-bold text-orange-rotary">
-              va
-            </span>
-          </div>
-        </div>
-
-
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-blue-rotary leading-tight mb-2">
-          MARATÓN
-        </h1>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-orange-rotary leading-tight mb-8">
-          ROTARIA
-        </h2> */}
-
-        {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-slate-600 font-medium mb-10 max-w-md">
-          Corriendo por la{" "}
-          <span className="text-blue-rotary font-bold">Visión Futura</span>
-        </p>
-
-        {/* CTA Button */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="https://www.entradaweb.com.ar/evento/e262f38c/step/1"
-            target="_blank"
-            className="group relative overflow-hidden bg-gradient-to-r from-orange-rotary to-orange-500 px-10 py-5 text-white font-bold text-xl shadow-lg shadow-orange-rotary/30 hover:shadow-xl hover:shadow-orange-rotary/40 transition-all duration-300 hover:-translate-y-1"
-          >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              SACA TU ENTRADA
-              <ExternalLink
-                size={20}
-                className="group-hover:translate-x-1 transition-transform"
+            <h1 className="mt-8">
+              <img
+                src="/maraton-2026/logo.svg"
+                alt="11ª Maratón Rotaria"
+                className="h-24 sm:h-32 object-contain"
               />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-rotary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </Link>
+            </h1>
+            <p className="mt-8 max-w-lg font-display text-3xl sm:text-4xl leading-tight tracking-tight text-balance">
+              Gracias por correr para que más chicos mendocinos{" "}
+              <span className="italic text-blue-rotary">vean mejor.</span>
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <dl className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+              <Dato etiqueta="Se corrió el" valor="12 de abril de 2026" />
+              <Dato
+                etiqueta="Largada"
+                valor="Rotonda del Rosedal, Parque San Martín"
+              />
+              <Dato etiqueta="Distancias" valor="10 km y 2,6 km" />
+            </dl>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <PillLink href="#resultados">Ver resultados</PillLink>
+              <PillLink href="#fotos" variante="outline">
+                Ver fotos
+              </PillLink>
+            </div>
+          </Reveal>
         </div>
-
-        {/* Quick Info Pills */}
-        <div className="flex flex-wrap gap-3 mt-8">
-          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 shadow-sm border border-slate-100">
-            <Calendar size={18} className="text-blue-rotary" />
-            <span className="text-md font-semibold text-slate-700">
-              12 Abril 2026
-            </span>
-          </div>
-          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 shadow-sm border border-slate-100">
-            <MapPin size={18} className="text-orange-rotary" />
-            <span className="text-md font-semibold text-slate-700">
-              Parque San Martín
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Right Image */}
-      <aside className="w-full lg:flex-1 order-1 lg:order-2">
-        <div className="relative">
-          {/* Main Image */}
-          <div className="relative overflow-hidden shadow-2xl shadow-blue-rotary/20">
-            <img
-              src="/maraton-2026/carousel.jpeg"
-              alt="Maratón Rotaria 2026"
-              className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover"
-            />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-rotary/40 via-transparent to-transparent" />
-
-            {/* Floating Badge */}
-            <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-4 shadow-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-rotary to-blue-600 flex items-center justify-center">
-                    <Users size={24} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Unite a
-                    </p>
-                    <p className="text-lg font-bold text-slate-800">
-                      +1000 corredores
-                    </p>
-                  </div>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 text-green-rotary">
-                  <span className="w-2 h-2 bg-green-rotary rounded-full animate-pulse" />
-                  <span className="text-sm font-semibold">
-                    Inscripciones abiertas
-                  </span>
-                </div>
-              </div>
+        <Reveal className="lg:col-span-5 lg:col-start-8" delay={200}>
+          <div className="relative">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl">
+              <Image
+                src={`${FOTOS}/18.webp`}
+                alt="Largada de la 11ª Maratón Rotaria bajo el arco de salida"
+                fill
+                priority
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute -left-4 sm:-left-10 bottom-10 rounded-2xl bg-white p-5 shadow-2xl shadow-ink/15">
+              <span className="font-display text-5xl text-blue-rotary">
+                35:06
+              </span>
+              <p className="mt-1 text-sm text-ink/70">
+                mejor tiempo en los 10 km
+              </p>
             </div>
           </div>
-
-          {/* Decorative elements */}
-          <div className="absolute -top-4 -right-4 w-24 h-24 bg-orange-rotary/10 rounded-full blur-xl" />
-          <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-rotary/10 rounded-full blur-xl" />
-        </div>
-      </aside>
+        </Reveal>
+      </Container>
     </section>
   );
 }
 
-function InfoCards() {
-  const cards = [
-    {
-      icon: LandPlot,
-      label: "LARGADA",
-      value: "Parque General San Martín",
-      sublabel: "Mendoza, Argentina",
-      gradient: "from-blue-rotary to-blue-600",
-      delay: "0ms",
-    },
-    {
-      icon: Calendar,
-      label: "FECHA",
-      value: "12 de Abril de 2026",
-      sublabel: "¡Anotá la fecha!",
-      gradient: "from-orange-rotary to-orange-500",
-      delay: "100ms",
-    },
-    {
-      icon: Medal,
-      label: "CATEGORÍAS",
-      value: "2.6KM y 10KM",
-      sublabel: "Participativa y Competitiva",
-      gradient: "from-pink-rotary to-pink-500",
-      delay: "200ms",
-    },
-  ];
-
+function Dato({ etiqueta, valor }: { etiqueta: string; valor: string }) {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 lg:mt-24">
-      {cards.map((card, index) => (
-        <div
-          key={index}
-          className="group relative bg-white p-6 shadow-lg shadow-slate-200/50 border border-slate-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
-          style={{ animationDelay: card.delay }}
-        >
-          {/* Icon */}
-          <div
-            className={`w-14 h-14 bg-gradient-to-br ${card.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+    <div className="flex items-baseline justify-between gap-6 py-4">
+      <dt className="text-xs font-bold uppercase tracking-[0.22em] text-ink/50">
+        {etiqueta}
+      </dt>
+      <dd className="text-right font-display text-xl sm:text-2xl tracking-tight">
+        {valor}
+      </dd>
+    </div>
+  );
+}
+
+function Cronica() {
+  return (
+    <section className="bg-white py-24 sm:py-32">
+      <Container className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+        <Reveal className="lg:col-span-6">
+          <Eyebrow>Cómo fue</Eyebrow>
+          <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.02] tracking-tight text-balance">
+            Una mañana de otoño en el{" "}
+            <span className="italic text-blue-rotary">Parque.</span>
+          </h2>
+          <div className="mt-8 space-y-5 text-lg leading-relaxed text-ink/70">
+            <p>
+              El domingo 12 de abril, minutos después de las 9, más de un
+              centenar de corredores largó desde la Rotonda del Rosedal con 14
+              grados, cielo despejado y un clima bien familiar.
+            </p>
+            <p>
+              El circuito de 5 kilómetros, que los competidores de los 10 km
+              recorrieron dos veces, pasó por la Avenida del Rosedal, el Paseo
+              de Las Tipas, la Avenida del Libertador, los Caballitos de Marly
+              y la Fuente de los Continentes. Mucho desnivel y veredas de
+              tierra batida le sumaron exigencia a la carrera.
+            </p>
+            <p>
+              En paralelo se hizo la caminata familiar de 2,6 km, una vuelta
+              completa al Lago del Parque.
+            </p>
+            <p>
+              Lo recaudado se destina a la detección temprana de problemas
+              visuales en chicos en edad escolar de sectores vulnerables y a
+              entregarles anteojos de forma gratuita.
+            </p>
+          </div>
+          <Link
+            href={NOTA}
+            target="_blank"
+            className="mt-8 inline-block border-b border-ink/30 pb-1 text-sm font-bold tracking-wide hover:border-gold-rotary"
           >
-            <card.icon size={28} className="text-white" />
+            Leé la crónica completa en Mendoza Corre
+          </Link>
+        </Reveal>
+        <Reveal className="lg:col-span-5 lg:col-start-8" delay={150}>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
+            <Image
+              src={`${FOTOS}/05.webp`}
+              alt="Staff del Rotary Club Mendoza Sur en la línea de llegada"
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
+            />
           </div>
-
-          {/* Content */}
-          <span className="text-sm font-bold text-slate-400 tracking-wider">
-            {card.label}
-          </span>
-          <h3 className="text-xl font-bold text-slate-800 mt-1 mb-1">
-            {card.value}
-          </h3>
-          <p className="text-sm text-slate-500">{card.sublabel}</p>
-
-          {/* Decorative corner */}
-          <div
-            className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.gradient} opacity-5`}
-          />
-        </div>
-      ))}
+          <figure className="mt-8 rounded-3xl bg-paper p-8">
+            <blockquote className="font-display text-2xl sm:text-3xl leading-snug tracking-tight text-balance">
+              “Un niño que no ve bien, no estudia bien, por lo que no tendrá
+              futuro.”
+            </blockquote>
+            <figcaption className="mt-5 text-sm text-ink/60">
+              Ricardo Llorente, socio del Rotary Club Mendoza Sur
+            </figcaption>
+          </figure>
+        </Reveal>
+      </Container>
+      <Container className="mt-20">
+        <Reveal>
+          <dl className="grid grid-cols-2 lg:grid-cols-4 border-t border-ink/10">
+            <Cifra numero="11ª" descripcion="Edición de la Maratón Rotaria" />
+            <Cifra numero="47" descripcion="Llegadas en los 10 km" />
+            <Cifra numero="12" descripcion="Llegadas en los 2,6 km" />
+            <Cifra numero="14°" descripcion="A la hora de la largada" />
+          </dl>
+        </Reveal>
+      </Container>
     </section>
   );
 }
 
-function CountdownSection() {
+function Cifra({
+  numero,
+  descripcion,
+}: {
+  numero: string;
+  descripcion: string;
+}) {
   return (
-    <section className="mt-16 lg:mt-24 text-center">
-      {/* Divider */}
-      <div className="flex items-center gap-4 mb-12">
-        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-        <Timer size={24} className="text-blue-rotary" />
-        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+    <div className="py-8 pr-6 lg:border-r lg:border-ink/10 lg:pl-8 lg:first:pl-0 lg:last:border-r-0">
+      <dt className="font-display text-4xl sm:text-5xl tracking-tight">
+        {numero}
+      </dt>
+      <dd className="mt-2 text-sm text-ink/60">{descripcion}</dd>
+    </div>
+  );
+}
+
+function Podios() {
+  return (
+    <section className="bg-ink py-24 sm:py-32 text-white">
+      <Container>
+        <Reveal>
+          <Eyebrow dark>Los ganadores</Eyebrow>
+          <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.02] tracking-tight">
+            De punta a <span className="italic text-gold-rotary">punta.</span>
+          </h2>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
+            Gustavo Galeano y María Clara Rosselot lideraron los 10 km desde la
+            largada hasta la meta.
+          </p>
+        </Reveal>
+        <div className="mt-14 grid gap-5 lg:grid-cols-3">
+          <Reveal>
+            <Podio
+              titulo="10 km · Varones"
+              foto="16"
+              alt="Podio masculino de los 10 km"
+              puestos={[
+                ["Gustavo Galeano", "35:06", "Ciudad · Victory Team"],
+                ["Roy Chamo", "37:38", "Tunuyán"],
+                ["Tomás Flores", "39:53", "Ciudad"],
+              ]}
+            />
+          </Reveal>
+          <Reveal delay={120}>
+            <Podio
+              titulo="10 km · Mujeres"
+              foto="17"
+              alt="Podio femenino de los 10 km"
+              puestos={[
+                ["María Clara Rosselot", "52:51", "Las Heras"],
+                ["Paula Gil", "54:17", "Godoy Cruz"],
+                ["Xiomara Barrios", "56:32", "Ciudad"],
+              ]}
+            />
+          </Reveal>
+          <Reveal delay={240}>
+            <Podio
+              titulo="2,6 km · Recreativa"
+              foto="03"
+              alt="Podio simbólico de los 2,6 km"
+              puestos={[
+                ["Marcos Bartolomé", "25:26", "Guaymallén"],
+                ["Verónica Bazán", "27:55", "Ciudad"],
+                ["Érica Buita", "27:55", "Godoy Cruz"],
+              ]}
+            />
+          </Reveal>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function Podio({
+  titulo,
+  foto,
+  alt,
+  puestos,
+}: {
+  titulo: string;
+  foto: string;
+  alt: string;
+  puestos: [string, string, string][];
+}) {
+  return (
+    <article className="h-full overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10">
+      <div className="relative aspect-[16/10]">
+        <Image
+          src={`${FOTOS}/thumb/${foto}.webp`}
+          alt={alt}
+          fill
+          sizes="(min-width: 1024px) 33vw, 100vw"
+          className="object-cover"
+        />
       </div>
+      <div className="p-7">
+        <h3 className="text-xs font-bold uppercase tracking-[0.22em] text-gold-rotary">
+          {titulo}
+        </h3>
+        <ol className="mt-4 divide-y divide-white/10">
+          {puestos.map(([nombre, tiempo, origen], i) => (
+            <li key={nombre} className="flex items-center gap-4 py-4">
+              <span
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-lg ${
+                  i === 0
+                    ? "bg-gold-rotary text-ink"
+                    : "border border-white/20 text-white/70"
+                }`}
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-xl leading-tight tracking-tight">
+                  {nombre}
+                </p>
+                <p className="text-sm text-white/50">{origen}</p>
+              </div>
+              <span className="font-display text-xl tabular-nums">
+                {tiempo}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </article>
+  );
+}
 
-      {/* Categories Detail */}
-      <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-8">
-        Elegí tu <span className="text-blue-rotary">categoría</span>
-      </h3>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-        {/* Participativa */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-rotary to-blue-700 p-8 text-white shadow-xl shadow-blue-rotary/20">
-          <div className="relative z-10">
-            <span className="text-sm font-medium opacity-80">Categoría</span>
-            <h4 className="text-3xl font-black mt-1 mb-2">PARTICIPATIVA</h4>
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <span className="text-5xl font-black">2.6</span>
-              <span className="text-2xl font-bold">KM</span>
-            </div>
-            <p className="text-sm opacity-80 mt-4">
-              Ideal para toda la familia
+function Clasificacion() {
+  return (
+    <section id="resultados" className="scroll-mt-20 py-24 sm:py-32">
+      <Container>
+        <Reveal className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div>
+            <Eyebrow>Resultados</Eyebrow>
+            <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.02] tracking-tight">
+              Clasificación{" "}
+              <span className="italic text-blue-rotary">general.</span>
+            </h2>
+            <p className="mt-5 max-w-xl text-ink/65">
+              Tiempos oficiales cronometrados por Sport Timer.
             </p>
           </div>
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
-          <div className="absolute -top-4 -left-4 w-20 h-20 bg-white/5 rounded-full" />
-        </div>
+          <a
+            href="/maraton-2026/clasificacion-general.pdf"
+            download
+            className="inline-flex items-center gap-2 self-start rounded-full border border-ink/20 px-6 py-3 text-sm font-bold tracking-wide transition-colors hover:bg-ink hover:text-white lg:self-auto"
+          >
+            <Download size={16} /> Descargar PDF
+          </a>
+        </Reveal>
+        <Reveal className="mt-12">
+          <Resultados />
+        </Reveal>
+      </Container>
+    </section>
+  );
+}
 
-        {/* Competitiva */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-orange-rotary to-orange-600 p-8 text-white shadow-xl shadow-orange-rotary/20">
-          <div className="relative z-10">
-            <span className="text-sm font-medium opacity-80">Categoría</span>
-            <h4 className="text-3xl font-black mt-1 mb-2">COMPETITIVA</h4>
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <span className="text-5xl font-black">10</span>
-              <span className="text-2xl font-bold">KM</span>
-            </div>
-            <p className="text-sm opacity-80 mt-4">
-              Para corredores experimentados
-            </p>
+function Fotos() {
+  return (
+    <section id="fotos" className="scroll-mt-20 bg-white py-24 sm:py-32">
+      <Container>
+        <Reveal className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div>
+            <Eyebrow>Galería</Eyebrow>
+            <h2 className="mt-6 font-display text-4xl sm:text-6xl leading-[1.02] tracking-tight">
+              La maratón en{" "}
+              <span className="italic text-blue-rotary">imágenes.</span>
+            </h2>
           </div>
-          <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
-          <div className="absolute -top-4 -left-4 w-20 h-20 bg-white/5 rounded-full" />
+          <p className="text-sm text-ink/60">
+            Fotos: Claudio Pereyra Moos ·{" "}
+            <Link
+              href={NOTA}
+              target="_blank"
+              className="border-b border-ink/30 pb-0.5 font-semibold text-ink hover:border-gold-rotary"
+            >
+              Mendoza Corre
+            </Link>
+          </p>
+        </Reveal>
+        <div className="mt-12">
+          <Galeria />
         </div>
-      </div>
+      </Container>
+    </section>
+  );
+}
 
-      {/* Mission Statement */}
-      <div className="mt-16 max-w-3xl mx-auto bg-white/60 backdrop-blur-sm p-8 border border-slate-100 shadow-lg">
-        <h4 className="text-xl font-bold text-blue-rotary mb-4">
-          🎯 Nuestra Misión
-        </h4>
-        <p className="text-slate-600 leading-relaxed">
-          Con tu participación ayudamos a mejorar la{" "}
-          <strong className="text-blue-rotary">
-            salud visual de niños en edad escolar
-          </strong>{" "}
-          de bajos recursos en Mendoza. En las últimas 10 ediciones hemos
-          entregado{" "}
-          <strong className="text-orange-rotary">más de 300 anteojos</strong> a
-          estudiantes que lo necesitaban.
-        </p>
-      </div>
+function Mision() {
+  return (
+    <section className="bg-ink text-white">
+      <Container className="grid gap-12 lg:grid-cols-12 py-24 sm:py-32">
+        <div className="lg:col-span-3">
+          <Eyebrow dark>Para qué corremos</Eyebrow>
+        </div>
+        <Reveal className="lg:col-span-9">
+          <p className="font-display text-3xl sm:text-5xl leading-[1.15] tracking-tight text-balance">
+            Lo recaudado en cada edición se destina a mejorar la salud visual
+            de niños en edad escolar de bajos recursos en Mendoza.{" "}
+            <span className="italic text-gold-rotary">
+              Ya entregamos más de 300 anteojos.
+            </span>
+          </p>
+          <PillLink
+            href={WHATSAPP}
+            externo
+            variante="gold"
+            className="mt-12"
+          >
+            Sumate al club
+          </PillLink>
+        </Reveal>
+      </Container>
     </section>
   );
 }
