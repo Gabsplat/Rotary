@@ -1,4 +1,4 @@
-import { obtenerConfig } from "@/lib/rifa";
+import { obtenerConfig, ventasAConservar } from "@/lib/rifa";
 import { activar, configurar } from "../../acciones";
 import { BotonConfirmar } from "../../componentes";
 import { Avisos, boton, campo, etiqueta, Tarjeta } from "../../ui";
@@ -8,7 +8,10 @@ export default async function Page({
 }: {
   searchParams: { ok?: string; error?: string };
 }) {
-  const config = await obtenerConfig();
+  const [config, conservar] = await Promise.all([
+    obtenerConfig(),
+    ventasAConservar(),
+  ]);
 
   return (
     <>
@@ -61,12 +64,30 @@ export default async function Page({
             <input type="hidden" name="volver" value="/panel/configuracion" />
             <p className="max-w-2xl text-ink/70">
               La rifa está en <strong className="text-ink">modo de prueba</strong>.
-              Al activarla se borran todas las operaciones de prueba y los 100
-              números vuelven a estar disponibles. Antes hay que cargar el
-              precio, el alias o CBU y el titular.
+              Para activarla tienen que estar cargados el precio, el alias o
+              CBU y el titular.
+            </p>
+            <p className="mt-4 max-w-2xl text-ink/70">
+              {conservar.length > 0 ? (
+                <>
+                  Al activar se{" "}
+                  <strong className="text-ink">
+                    conservan las ventas ya cargadas
+                  </strong>{" "}
+                  ({conservar.length === 1 ? "número" : "números"}{" "}
+                  {conservar.join(", ")}). Solo se borran las reservas de
+                  prueba que no llegaron a pagarse.
+                </>
+              ) : (
+                "No hay ventas cargadas: al activar, los 100 números quedan disponibles."
+              )}
             </p>
             <BotonConfirmar
-              pregunta="Se van a borrar todas las operaciones de prueba y la rifa queda habilitada para ventas reales. ¿Activar?"
+              pregunta={
+                conservar.length > 0
+                  ? `La rifa queda habilitada para ventas reales y se conservan las ventas de los números ${conservar.join(", ")}. ¿Activar?`
+                  : "La rifa queda habilitada para ventas reales. ¿Activar?"
+              }
               className={`${boton} mt-6`}
             >
               Activar la rifa
