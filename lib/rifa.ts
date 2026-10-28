@@ -334,8 +334,18 @@ export async function guardarConfig(datos: Omit<Config, "activa">, email: string
   });
 }
 
-// Pasa de modo prueba a ventas reales: borra las operaciones de prueba y deja
-// los 100 números disponibles.
+// Ventas cargadas antes de activar que se conservan al activar: las vendidas y
+// las que ya tienen comprobante esperando revisión.
+export async function ventasAConservar() {
+  const filas = await db()<{ numero: number }[]>`
+    SELECT numero FROM operaciones
+    WHERE prueba AND estado IN ('pendiente', 'confirmada')
+    ORDER BY numero`;
+  return filas.map((fila) => fila.numero);
+}
+
+// Pasa de modo prueba a ventas reales. Conserva las ventas y los comprobantes
+// pendientes ya cargados, y borra el resto de las operaciones de prueba.
 export async function activarRifa(email: string) {
   const config = await obtenerConfig();
   if (config.activa) throw new ErrorRifa("La rifa ya está activa.");
@@ -344,8 +354,18 @@ export async function activarRifa(email: string) {
       "Antes de activar completá el precio, el alias o CBU y el titular."
     );
   await db().begin(async (tx) => {
-    await tx`DELETE FROM operaciones WHERE prueba`;
+    await tx`
+      DELETE FROM operaciones
+      WHERE prueba AND estado NOT IN ('pendiente', 'confirmada')`;
+    const conservadas = await tx`
+      UPDATE operaciones SET prueba = false WHERE prueba RETURNING id`;
     await tx`UPDATE rifa_config SET activa = true, activada_en = now() WHERE id = 1`;
-    await auditar(tx, email, "activar", null);
+    await auditar(
+      tx,
+      email,
+      "activar",
+      null,
+      `${conservadas.length} ventas conservadas`
+    );
   });
 }

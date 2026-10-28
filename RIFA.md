@@ -83,9 +83,10 @@ resto de los socios se carga desde el panel.
 4. Probá el circuito completo en modo de prueba: reservá un número desde
    `/rifa`, subí un comprobante, confirmalo desde el panel, cargá una venta en
    efectivo.
-5. Cuando esté todo bien, tocá **Activar la rifa**. Borra las operaciones de
-   prueba y deja los 100 números disponibles. No se puede deshacer desde el
-   panel.
+5. Cuando esté todo bien, tocá **Activar la rifa**. Conserva las ventas ya
+   cargadas (vendidas o con comprobante por revisar) y borra solo las reservas
+   de prueba que no se pagaron. Lo que haya sido una prueba y se conserve se
+   anula a mano desde **Pedidos**.
 6. Cada socio copia su enlace desde **Resumen → Tu enlace de vendedor**.
 
 ## Cómo funciona
