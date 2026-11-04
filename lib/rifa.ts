@@ -6,7 +6,9 @@ export const TOTAL_NUMEROS = 100;
 export const MINUTOS_RESERVA = 15;
 // El límite de Vercel para el cuerpo de una petición es 4,5 MB.
 export const MAX_COMPROBANTE = 4 * 1024 * 1024;
-const MAX_RESERVAS_POR_TELEFONO = 3;
+export const MAX_NUMEROS_POR_COMPRA = 10;
+// Números reservados sin pagar que puede acumular un mismo teléfono.
+const MAX_RESERVADOS_POR_TELEFONO = 10;
 
 export type Config = {
   nombre: string;
@@ -37,6 +39,8 @@ export type Operacion = {
   resuelto_en: Date | null;
   resuelto_por: string | null;
   tiene_comprobante: boolean;
+  // Todos los números de la misma compra, incluido este.
+  compra: number[];
 };
 
 export class ErrorRifa extends Error {}
@@ -94,6 +98,20 @@ function validarNumero(numero: unknown) {
   return n;
 }
 
+function validarNumeros(numeros: unknown) {
+  const lista = Array.isArray(numeros) ? numeros : [numeros];
+  const unicos = Array.from(new Set(lista.map(validarNumero))).sort((a, b) => a - b);
+  if (unicos.length === 0) throw new ErrorRifa("Elegí al menos un número.");
+  if (unicos.length > MAX_NUMEROS_POR_COMPRA)
+    throw new ErrorRifa(
+      `Podés reservar hasta ${MAX_NUMEROS_POR_COMPRA} números por compra.`
+    );
+  return unicos;
+}
+
+// Clave que agrupa las operaciones de una misma compra.
+const CLAVE_COMPRA = "COALESCE(o.grupo, o.token)";
+
 async function validarVendedor(vendedorId: unknown) {
   const id = Number(vendedorId);
   if (!Number.isInteger(id) || id < 1) return null;
@@ -102,59 +120,78 @@ async function validarVendedor(vendedorId: unknown) {
 }
 
 export async function reservar(datos: {
-  numero: unknown;
+  numeros?: unknown;
+  numero?: unknown;
   nombre: unknown;
   telefono: unknown;
   vendedorId: unknown;
 }) {
-  const numero = validarNumero(datos.numero);
+  const numeros = validarNumeros(datos.numeros ?? datos.numero);
   const { nombre, telefono } = validarComprador(datos.nombre, datos.telefono);
   const vendedorId = await validarVendedor(datos.vendedorId);
   if (!vendedorId) throw new ErrorRifa("Elegí quién te vendió el número.");
   const config = await obtenerConfig();
-  const token = randomBytes(24).toString("base64url");
+  const grupo = randomBytes(24).toString("base64url");
 
-  const reserva = await db().begin(async (tx) => {
+  const venceEn = await db().begin(async (tx) => {
     const [{ abiertas }] = await tx<{ abiertas: number }[]>`
       SELECT count(*)::int AS abiertas FROM operaciones
       WHERE comprador_telefono = ${telefono}
         AND estado = 'reservada' AND vence_en > now()`;
-    if (abiertas >= MAX_RESERVAS_POR_TELEFONO)
+    if (abiertas + numeros.length > MAX_RESERVADOS_POR_TELEFONO)
       throw new ErrorRifa(
-        "Ya tenés reservas sin pagar. Enviá esos comprobantes antes de reservar otro número."
+        "Ya tenés reservas sin pagar. Enviá esos comprobantes antes de reservar más números."
       );
 
     await tx`
       UPDATE operaciones SET estado = 'vencida', resuelto_en = now()
-      WHERE numero = ${numero} AND estado = 'reservada' AND vence_en <= now()`;
+      WHERE numero IN ${tx(numeros)} AND estado = 'reservada' AND vence_en <= now()`;
 
-    // Si otra persona ganó el número, el índice único descarta esta fila.
-    const [fila] = await tx<{ vence_en: Date }[]>`
+    // Si otra persona ganó alguno de los números, el índice único descarta esa
+    // fila; en ese caso se cancela la compra entera.
+    const filas = await tx<{ numero: number; vence_en: Date }[]>`
       INSERT INTO operaciones
         (numero, estado, comprador_nombre, comprador_telefono, vendedor_id,
-         token, vence_en, prueba)
-      VALUES
-        (${numero}, 'reservada', ${nombre}, ${telefono}, ${vendedorId},
-         ${token}, now() + make_interval(mins => ${MINUTOS_RESERVA}),
-         ${!config.activa})
+         token, grupo, vence_en, prueba)
+      SELECT n, 'reservada', ${nombre}, ${telefono}, ${vendedorId},
+             ${grupo} || '-' || n, ${grupo},
+             now() + make_interval(mins => ${MINUTOS_RESERVA}), ${!config.activa}
+      FROM unnest(${numeros}::int[]) AS n
       ON CONFLICT (numero)
         WHERE estado IN ('reservada', 'pendiente', 'confirmada')
         DO NOTHING
-      RETURNING vence_en`;
-    return fila;
+      RETURNING numero, vence_en`;
+    if (filas.length < numeros.length) {
+      const tomados = numeros.filter((n) => !filas.some((f) => f.numero === n));
+      throw new ErrorRifa(
+        tomados.length === 1
+          ? `El ${tomados[0]} acaba de ser reservado por otra persona. Sacalo y probá de nuevo.`
+          : `Los números ${tomados.join(", ")} acaban de ser reservados por otra persona. Sacalos y probá de nuevo.`
+      );
+    }
+    return filas[0].vence_en;
   });
 
-  if (!reserva)
-    throw new ErrorRifa("Ese número acaba de ser reservado. Elegí otro.");
-  return { token, numero, venceEn: reserva.vence_en };
+  return { token: grupo, numeros, venceEn };
 }
 
+// Estado de una compra para que el comprador la retome. Acepta el token de una
+// compra de varios números o el de una operación individual.
 export async function reservaPorToken(token: string) {
-  const [fila] = await db()<
+  const filas = await db()<
     { numero: number; estado: Operacion["estado"]; vence_en: Date | null }[]
   >`
-    SELECT numero, estado, vence_en FROM operaciones WHERE token = ${token}`;
-  return fila ?? null;
+    SELECT numero, estado, vence_en FROM operaciones
+    WHERE grupo = ${token} OR token = ${token}
+    ORDER BY numero`;
+  if (filas.length === 0) return null;
+  const reservadas = filas.filter((f) => f.estado === "reservada");
+  const vigentes = reservadas.length > 0 ? reservadas : filas;
+  return {
+    numeros: vigentes.map((f) => f.numero),
+    estado: vigentes[0].estado,
+    vence_en: vigentes[0].vence_en,
+  };
 }
 
 const FIRMAS: { mime: string; firma: number[] }[] = [
@@ -179,32 +216,35 @@ export async function adjuntarComprobante(
   const mime = detectarMime(archivo.datos);
   if (!mime) throw new ErrorRifa("El comprobante debe ser JPG, PNG o PDF.");
 
-  const numero = await db().begin(async (tx) => {
+  const numeros = await db().begin(async (tx) => {
     // Se acepta aunque hayan pasado los 15 minutos, siempre que nadie más
     // haya tomado el número: en ese caso la reserva ya figura como vencida.
-    const [operacion] = await tx<{ id: number; numero: number }[]>`
+    // Pasan juntos todos los números de la compra que sigan reservados. El
+    // comprobante se guarda una sola vez, en la primera operación.
+    const operaciones = await tx<{ id: number; numero: number }[]>`
       UPDATE operaciones
       SET estado = 'pendiente', comprobante_en = now(), vence_en = NULL
-      WHERE token = ${token} AND estado = 'reservada'
+      WHERE (grupo = ${token} OR token = ${token}) AND estado = 'reservada'
       RETURNING id, numero`;
-    if (!operacion) return null;
+    if (operaciones.length === 0) return null;
+    const primera = operaciones.reduce((a, b) => (a.id < b.id ? a : b));
     await tx`
       INSERT INTO comprobantes (operacion_id, mime, nombre, datos)
-      VALUES (${operacion.id}, ${mime}, ${limpiarTexto(archivo.nombre, 120)},
+      VALUES (${primera.id}, ${mime}, ${limpiarTexto(archivo.nombre, 120)},
               ${archivo.datos})`;
-    return operacion.numero;
+    return operaciones.map((o) => o.numero).sort((a, b) => a - b);
   });
 
-  if (numero === null) {
+  if (numeros === null) {
     const reserva = await reservaPorToken(token);
     if (!reserva) throw new ErrorRifa("No encontramos esa reserva.");
     if (reserva.estado === "pendiente" || reserva.estado === "confirmada")
-      throw new ErrorRifa("Ya recibimos el comprobante de este número.");
+      throw new ErrorRifa("Ya recibimos el comprobante de esta compra.");
     throw new ErrorRifa(
       "La reserva venció y el número fue tomado por otra persona. Escribile a tu vendedor."
     );
   }
-  return numero;
+  return numeros;
 }
 
 // ---- Panel de socios ----
@@ -215,8 +255,15 @@ const CAMPOS_OPERACION = `
   o.creado_en, o.resuelto_en, o.resuelto_por,
   CASE WHEN o.estado = 'reservada' AND o.vence_en <= now()
     THEN 'vencida' ELSE o.estado END AS estado,
-  EXISTS (SELECT 1 FROM comprobantes c WHERE c.operacion_id = o.id)
-    AS tiene_comprobante`;
+  EXISTS (
+    SELECT 1 FROM comprobantes c JOIN operaciones x ON x.id = c.operacion_id
+    WHERE COALESCE(x.grupo, x.token) = ${CLAVE_COMPRA}
+  ) AS tiene_comprobante,
+  ARRAY(
+    SELECT x.numero FROM operaciones x
+    WHERE COALESCE(x.grupo, x.token) = ${CLAVE_COMPRA}
+    ORDER BY x.numero
+  ) AS compra`;
 
 export async function listarOperaciones(filtro?: { vendedorId?: number }) {
   const condicion = filtro?.vendedorId ? "WHERE o.vendedor_id = $1" : "";
@@ -229,9 +276,15 @@ export async function listarOperaciones(filtro?: { vendedorId?: number }) {
   );
 }
 
+// Comprobante de la compra a la que pertenece la operación.
 export async function obtenerComprobante(operacionId: number) {
   const [fila] = await db()<{ mime: string; datos: Buffer }[]>`
-    SELECT mime, datos FROM comprobantes WHERE operacion_id = ${operacionId}`;
+    SELECT c.mime, c.datos
+    FROM operaciones o
+    JOIN operaciones x ON COALESCE(x.grupo, x.token) = COALESCE(o.grupo, o.token)
+    JOIN comprobantes c ON c.operacion_id = x.id
+    WHERE o.id = ${operacionId}
+    LIMIT 1`;
   return fila ?? null;
 }
 
@@ -247,14 +300,21 @@ async function auditar(
     VALUES (${email}, ${accion}, ${operacionId}, ${detalle})`;
 }
 
+// Confirma juntos todos los números pendientes de la compra: fueron pagados
+// con una sola transferencia.
 export async function confirmarPago(id: number, email: string) {
   await db().begin(async (tx) => {
-    const [fila] = await tx`
-      UPDATE operaciones
+    const filas = await tx<{ id: number }[]>`
+      UPDATE operaciones o
       SET estado = 'confirmada', resuelto_en = now(), resuelto_por = ${email}
-      WHERE id = ${id} AND estado = 'pendiente' RETURNING id`;
-    if (!fila) throw new ErrorRifa("La operación ya no está pendiente.");
-    await auditar(tx, email, "confirmar", id);
+      FROM operaciones elegida
+      WHERE elegida.id = ${id} AND elegida.estado = 'pendiente'
+        AND COALESCE(o.grupo, o.token) = COALESCE(elegida.grupo, elegida.token)
+        AND o.estado = 'pendiente'
+      RETURNING o.id`;
+    if (filas.length === 0)
+      throw new ErrorRifa("La operación ya no está pendiente.");
+    for (const fila of filas) await auditar(tx, email, "confirmar", fila.id);
   });
 }
 

@@ -91,8 +91,10 @@ resto de los socios se carga desde el panel.
 
 ## Cómo funciona
 
-- **Reserva.** El comprador elige número y carga nombre, teléfono y vendedor.
-  El número queda reservado 15 minutos. Un índice único en la base impide que
+- **Reserva.** El comprador elige uno o varios números (hasta 10) y carga
+  nombre, teléfono y vendedor. Quedan reservados 15 minutos y se pagan con una
+  sola transferencia por el total. Si alguno de los elegidos lo tomó otra
+  persona, no se reserva ninguno. Un índice único en la base impide que
   dos personas reserven el mismo número a la vez.
 - **Comprobante.** JPG, PNG o PDF de hasta 4 MB (el tope de Vercel por
   petición es 4,5 MB). Las fotos grandes se achican en el navegador antes de
@@ -100,7 +102,8 @@ resto de los socios se carga desde el panel.
 - **Vencimiento.** Una reserva vencida libera el número. Si el comprador manda
   el comprobante tarde y nadie más tomó el número, se acepta igual.
 - **Confirmación.** Es manual: un socio verifica en la cuenta que el dinero
-  entró y toca **Confirmar pago**.
+  entró y toca **Confirmar pago**. En una compra de varios números, el panel
+  muestra "Compra de N" en cada uno y confirmar uno confirma todos.
 - **Efectivo.** El socio carga la venta desde el panel y el número queda
   vendido en el acto, marcado "sin rendir". Cuando el vendedor entrega la
   plata, se toca **Marcar rendido**.
@@ -112,8 +115,8 @@ resto de los socios se carga desde el panel.
 - **Privacidad.** La vista pública solo expone el estado de cada número. Los
   datos de compradores y los comprobantes se sirven únicamente con sesión de
   socio. Los comprobantes se guardan en la base (tabla `comprobantes`).
-- **Tope anti abuso.** Un mismo teléfono puede tener hasta 3 reservas sin
-  pagar al mismo tiempo.
+- **Tope anti abuso.** Un mismo teléfono puede tener hasta 10 números
+  reservados sin pagar al mismo tiempo.
 
 ## Desarrollo local
 

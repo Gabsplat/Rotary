@@ -11,6 +11,7 @@ import Confeti from "./Confeti";
 const CLAVE_RESERVA = "rifa-reserva";
 const MAX_COMPROBANTE = 4 * 1024 * 1024;
 const SEGUNDOS_RESERVA = 15 * 60;
+const MAX_POR_COMPRA = 10;
 
 type Vendedor = { id: number; nombre: string };
 
@@ -24,7 +25,7 @@ type ConfigPublica = {
 
 type Reserva = {
   token: string;
-  numero: number;
+  numeros: number[];
   venceEn: string | null;
   alias: string;
   titular: string;
@@ -32,9 +33,15 @@ type Reserva = {
 };
 
 type Paso =
-  | { tipo: "datos"; numero: number }
+  | { tipo: "datos"; numeros: number[] }
   | { tipo: "pago"; reserva: Reserva }
-  | { tipo: "enviado"; numero: number };
+  | { tipo: "enviado"; numeros: number[] };
+
+function listar(numeros: number[]) {
+  return numeros.length === 1
+    ? `el ${numeros[0]}`
+    : `los ${numeros.slice(0, -1).join(", ")} y ${numeros[numeros.length - 1]}`;
+}
 
 const pesos = new Intl.NumberFormat("es-AR", {
   style: "currency",
@@ -62,7 +69,7 @@ export default function Rifa({
   vendedorInicial?: number;
 }) {
   const [numeros, setNumeros] = useState(numerosIniciales);
-  const [elegido, setElegido] = useState<number | null>(null);
+  const [elegidos, setElegidos] = useState<number[]>([]);
   const [asomado, setAsomado] = useState<number | null>(null);
   const [ruleta, setRuleta] = useState<number | null>(null);
   const [paso, setPaso] = useState<Paso | null>(null);
@@ -94,18 +101,28 @@ export default function Rifa({
     if (!token) return;
     pedir(`/api/rifa/reserva?token=${encodeURIComponent(token)}`)
       .then(({ reserva }) => {
-        if (reserva?.estado === "reservada")
+        if (reserva?.estado === "reservada" && Array.isArray(reserva.numeros))
           setReservaGuardada({ token, ...reserva });
         else localStorage.removeItem(CLAVE_RESERVA);
       })
       .catch(() => {});
   }, []);
 
-  // Si otra persona se lleva el número mientras lo mirabas, se suelta.
+  // Si otra persona se lleva un número elegido mientras lo mirabas, se suelta.
   useEffect(() => {
-    if (elegido !== null && numeros[elegido - 1] !== "disponible")
-      setElegido(null);
-  }, [numeros, elegido]);
+    setElegidos((actual) => {
+      const libres = actual.filter((n) => numeros[n - 1] === "disponible");
+      return libres.length === actual.length ? actual : libres;
+    });
+  }, [numeros]);
+
+  const sumar = useCallback((numero: number) => {
+    setElegidos((actual) =>
+      actual.includes(numero) || actual.length >= MAX_POR_COMPRA
+        ? actual
+        : [...actual, numero].sort((a, b) => a - b)
+    );
+  }, []);
 
   const girando = ruleta !== null;
   const libres = numeros.filter((estado) => estado === "disponible").length;
@@ -116,18 +133,18 @@ export default function Rifa({
   // Recorre números libres cada vez más lento hasta frenar en uno.
   function tentarSuerte() {
     const candidatos = numeros.flatMap((estado, i) =>
-      estado === "disponible" ? [i + 1] : []
+      estado === "disponible" && !elegidos.includes(i + 1) ? [i + 1] : []
     );
-    if (candidatos.length === 0 || girando) return;
+    if (candidatos.length === 0 || girando || elegidos.length >= MAX_POR_COMPRA)
+      return;
     const alAzar = () =>
       candidatos[Math.floor(Math.random() * candidatos.length)];
     const ganador = alAzar();
     setBusqueda("");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setElegido(ganador);
+      sumar(ganador);
       return;
     }
-    setElegido(null);
     const PASOS = 20;
     let demora = 0;
     for (let k = 0; k < PASOS; k++) {
@@ -139,7 +156,7 @@ export default function Rifa({
     temporizadores.current.push(
       setTimeout(() => {
         setRuleta(null);
-        setElegido(ganador);
+        sumar(ganador);
       }, demora + 450)
     );
   }
@@ -149,12 +166,18 @@ export default function Rifa({
     setBusqueda(limpio);
     const numero = Number(limpio);
     if (numero >= 1 && numero <= numeros.length && numeros[numero - 1] === "disponible")
-      setElegido(numero);
+      sumar(numero);
   }
 
   const elegir = useCallback((numero: number) => {
     setBusqueda("");
-    setElegido((actual) => (actual === numero ? null : numero));
+    setElegidos((actual) =>
+      actual.includes(numero)
+        ? actual.filter((n) => n !== numero)
+        : actual.length >= MAX_POR_COMPRA
+        ? actual
+        : [...actual, numero].sort((a, b) => a - b)
+    );
   }, []);
 
   function cerrar() {
@@ -164,7 +187,9 @@ export default function Rifa({
 
   const buscado = Number(busqueda);
   const estadoBuscado = busqueda ? numeros[buscado - 1] : undefined;
-  const enBoleto = ruleta ?? asomado ?? elegido;
+  const enBoleto = ruleta ?? asomado ?? elegidos[elegidos.length - 1] ?? null;
+  const total =
+    config.precio > 0 ? pesos.format(config.precio * elegidos.length) : undefined;
 
   return (
     <>
@@ -182,7 +207,7 @@ export default function Rifa({
               onClick={() => setPaso({ tipo: "pago", reserva: reservaGuardada })}
               className="mb-8 w-full rounded-2xl bg-gold-rotary px-5 py-4 text-left text-sm font-bold text-ink transition-colors hover:bg-white"
             >
-              Tenés el número {reservaGuardada.numero} reservado. Tocá acá para
+              Tenés reservado {listar(reservaGuardada.numeros)}. Tocá acá para
               enviar el comprobante.
             </button>
           )}
@@ -288,7 +313,7 @@ export default function Rifa({
                       key={`${i}-${estado}`}
                       numero={i + 1}
                       estado={estado}
-                      elegida={elegido === i + 1}
+                      elegida={elegidos.includes(i + 1)}
                       encendida={ruleta === i + 1}
                       bloqueada={girando}
                       onElegir={elegir}
@@ -297,7 +322,11 @@ export default function Rifa({
                   ))}
                 </div>
 
-                <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-white/60">
+                <p className="mt-6 text-sm text-white/60">
+                  Podés elegir hasta {MAX_POR_COMPRA} números y pagarlos con
+                  una sola transferencia.
+                </p>
+                <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-white/60">
                   <Leyenda className="border border-white/25" texto="Libre" />
                   <Leyenda className="border border-dashed border-gold-rotary/70" texto="Reservado" />
                   <Leyenda className="bg-white/10" texto="Vendido" />
@@ -363,26 +392,32 @@ export default function Rifa({
         </Container>
       </section>
 
-      {elegido !== null && !paso && !girando && (
+      {elegidos.length > 0 && !paso && !girando && (
         <div className="rifa-barra fixed inset-x-0 bottom-0 z-50 p-3 sm:p-5">
-          <div className="mx-auto flex max-w-xl items-center gap-4 rounded-full bg-white py-2.5 pl-2.5 pr-3 shadow-2xl shadow-ink/40 ring-1 ring-ink/10">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gold-rotary font-display text-xl tabular-nums text-ink">
-              {elegido}
+          <div className="mx-auto flex max-w-xl items-center gap-3 rounded-[2rem] bg-white py-2.5 pl-2.5 pr-3 shadow-2xl shadow-ink/40 ring-1 ring-ink/10 sm:gap-4">
+            <span className="flex h-12 min-w-12 shrink-0 items-center justify-center rounded-full bg-gold-rotary px-3 font-display text-xl tabular-nums text-ink">
+              {elegidos.length === 1 ? elegidos[0] : `×${elegidos.length}`}
             </span>
             <span className="min-w-0 flex-1 text-sm font-semibold leading-tight text-ink">
-              El {elegido} está libre
-              {precio && <span className="block font-normal text-ink/60">{precio}</span>}
+              <span className="block truncate">
+                {elegidos.length === 1
+                  ? `El ${elegidos[0]} está libre`
+                  : elegidos.join(", ")}
+              </span>
+              <span className="block font-normal text-ink/60">
+                {total ?? "Tocá más números para sumarlos"}
+              </span>
             </span>
             <button
-              onClick={() => setPaso({ tipo: "datos", numero: elegido })}
-              className="rounded-full bg-ink px-6 py-3 text-sm font-bold tracking-wide text-white transition-colors hover:bg-blue-rotary"
+              onClick={() => setPaso({ tipo: "datos", numeros: elegidos })}
+              className="shrink-0 rounded-full bg-ink px-5 py-3 text-sm font-bold tracking-wide text-white transition-colors hover:bg-blue-rotary sm:px-6"
             >
-              Lo quiero
+              {elegidos.length === 1 ? "Lo quiero" : "Los quiero"}
             </button>
             <button
-              onClick={() => setElegido(null)}
-              aria-label="Soltar el número"
-              className="rounded-full p-2 text-ink/50 hover:bg-ink/10"
+              onClick={() => setElegidos([])}
+              aria-label="Soltar los números"
+              className="shrink-0 rounded-full p-2 text-ink/50 hover:bg-ink/10"
             >
               <X size={18} />
             </button>
@@ -406,13 +441,14 @@ export default function Rifa({
             </button>
             {paso.tipo === "datos" && (
               <FormularioDatos
-                numero={paso.numero}
+                numeros={paso.numeros}
+                precio={config.precio}
                 vendedores={vendedores}
                 vendedorInicial={vendedorInicial}
                 onReservado={(reserva) => {
                   localStorage.setItem(CLAVE_RESERVA, reserva.token);
                   setReservaGuardada(reserva);
-                  setElegido(null);
+                  setElegidos([]);
                   setPaso({ tipo: "pago", reserva });
                   actualizar();
                 }}
@@ -424,14 +460,14 @@ export default function Rifa({
                 onEnviado={() => {
                   localStorage.removeItem(CLAVE_RESERVA);
                   setReservaGuardada(null);
-                  setPaso({ tipo: "enviado", numero: paso.reserva.numero });
+                  setPaso({ tipo: "enviado", numeros: paso.reserva.numeros });
                   actualizar();
                 }}
               />
             )}
             {paso.tipo === "enviado" && (
               <Enviado
-                numero={paso.numero}
+                numeros={paso.numeros}
                 config={config}
                 precio={precio}
                 onCerrar={cerrar}
@@ -556,13 +592,44 @@ function Medalla({ numero }: { numero: number }) {
   );
 }
 
+function Medallas({ numeros }: { numeros: number[] }) {
+  if (numeros.length === 1) return <Medalla numero={numeros[0]} />;
+  return (
+    <span className="flex h-16 w-16 shrink-0 -rotate-6 flex-col items-center justify-center rounded-2xl bg-gold-rotary shadow-lg shadow-gold-rotary/40">
+      <span className="font-display text-3xl leading-none tabular-nums">
+        {numeros.length}
+      </span>
+      <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider">
+        números
+      </span>
+    </span>
+  );
+}
+
+function Fichas({ numeros }: { numeros: number[] }) {
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {numeros.map((n) => (
+        <li
+          key={n}
+          className="flex h-10 min-w-10 items-center justify-center rounded-full bg-gold-rotary px-3 font-display text-lg tabular-nums"
+        >
+          {n}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function FormularioDatos({
-  numero,
+  numeros,
+  precio,
   vendedores,
   vendedorInicial,
   onReservado,
 }: {
-  numero: number;
+  numeros: number[];
+  precio: number;
   vendedores: Vendedor[];
   vendedorInicial?: number;
   onReservado: (reserva: Reserva) => void;
@@ -580,7 +647,7 @@ function FormularioDatos({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          numero,
+          numeros,
           nombre: datos.get("nombre"),
           telefono: datos.get("telefono"),
           vendedorId: datos.get("vendedor"),
@@ -596,16 +663,29 @@ function FormularioDatos({
   return (
     <form onSubmit={enviar} className="space-y-5">
       <div className="flex items-center gap-4 pr-10">
-        <Medalla numero={numero} />
+        <Medallas numeros={numeros} />
         <div>
           <h3 className="font-display text-3xl leading-none tracking-tight">
             ¡Buena elección!
           </h3>
           <p className="mt-2 text-sm text-ink/70">
-            Completá tus datos y lo guardamos 15 minutos a tu nombre.
+            Completá tus datos y{" "}
+            {numeros.length === 1 ? "lo guardamos" : "los guardamos"} 15
+            minutos a tu nombre.
           </p>
         </div>
       </div>
+      {numeros.length > 1 && (
+        <div className="rounded-2xl bg-white p-4">
+          <Fichas numeros={numeros} />
+          {precio > 0 && (
+            <p className="mt-3 text-sm text-ink/70">
+              Total: <strong className="text-ink">{pesos.format(precio * numeros.length)}</strong>{" "}
+              en una sola transferencia.
+            </p>
+          )}
+        </div>
+      )}
       <label className={etiqueta}>
         Nombre y apellido
         <input name="nombre" required minLength={3} maxLength={80} autoComplete="name" className={campo} />
@@ -629,7 +709,11 @@ function FormularioDatos({
       </label>
       {error && <Aviso>{error}</Aviso>}
       <button disabled={enviando} className={botonPrimario}>
-        {enviando ? "Reservando…" : `Reservar el ${numero}`}
+        {enviando
+          ? "Reservando…"
+          : numeros.length === 1
+          ? `Reservar el ${numeros[0]}`
+          : `Reservar ${numeros.length} números`}
       </button>
     </form>
   );
@@ -736,14 +820,17 @@ function Pago({
   return (
     <form onSubmit={enviar} className="space-y-5">
       <div className="flex items-center gap-4 pr-10">
-        <Medalla numero={reserva.numero} />
+        <Medallas numeros={reserva.numeros} />
         <h3 className="flex-1 font-display text-3xl leading-none tracking-tight">
           Es casi tuyo
         </h3>
         {restante > 0 && <Reloj restante={restante} />}
       </div>
+      {reserva.numeros.length > 1 && <Fichas numeros={reserva.numeros} />}
       <p className="text-sm text-ink/70">
-        Transferí y enviá el comprobante antes de que se acabe el tiempo.
+        {reserva.numeros.length === 1
+          ? "Transferí y enviá el comprobante antes de que se acabe el tiempo."
+          : "Hacé una sola transferencia por el total y enviá el comprobante antes de que se acabe el tiempo."}
       </p>
       {restante === 0 && (
         <Aviso>
@@ -754,7 +841,10 @@ function Pago({
 
       <dl className="divide-y divide-ink/10 rounded-2xl bg-white px-5">
         {reserva.precio > 0 && (
-          <Fila etiqueta="Monto" valor={pesos.format(reserva.precio)} />
+          <Fila
+            etiqueta={reserva.numeros.length === 1 ? "Monto" : "Total"}
+            valor={pesos.format(reserva.precio * reserva.numeros.length)}
+          />
         )}
         <div className="py-3">
           <dt className="text-xs font-bold uppercase tracking-[0.18em] text-ink/50">
@@ -809,19 +899,19 @@ function Pago({
 }
 
 function Enviado({
-  numero,
+  numeros,
   config,
   precio,
   onCerrar,
 }: {
-  numero: number;
+  numeros: number[];
   config: ConfigPublica;
   precio?: string;
   onCerrar: () => void;
 }) {
   const [enlace, setEnlace] = useState("");
   useEffect(() => setEnlace(window.location.href), []);
-  const mensaje = `¡Ya tengo el número ${numero} en la ${config.nombre} del Rotary Club Mendoza Sur! Elegí el tuyo: ${enlace}`;
+  const mensaje = `¡Ya tengo ${numeros.length === 1 ? `el número ${numeros[0]}` : `los números ${numeros.join(", ")}`} en la ${config.nombre} del Rotary Club Mendoza Sur! Elegí el tuyo: ${enlace}`;
 
   return (
     <div className="text-center">
@@ -829,15 +919,18 @@ function Enviado({
         ¡Estás <span className="italic text-blue-rotary">adentro!</span>
       </h3>
       <Boleto
-        numero={numero}
+        numero={numeros[0]}
         premio={config.premio}
         precio={precio}
         sello="Enviado"
         className="mx-auto mt-8 w-full max-w-[16rem] text-left"
       />
       <p className="mt-8 text-ink/70">
-        Recibimos tu comprobante. El número {numero} queda bloqueado a tu
-        nombre mientras un socio del club verifica que el pago ingresó.
+        Recibimos tu comprobante.{" "}
+        {numeros.length === 1
+          ? `El número ${numeros[0]} queda bloqueado`
+          : `Los números ${numeros.join(", ")} quedan bloqueados`}{" "}
+        a tu nombre mientras un socio del club verifica que el pago ingresó.
       </p>
       <a
         href={`https://wa.me/?text=${encodeURIComponent(mensaje)}`}

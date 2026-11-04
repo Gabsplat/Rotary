@@ -68,3 +68,9 @@ CREATE TABLE IF NOT EXISTS auditoria (
   detalle text NOT NULL DEFAULT '',
   creado_en timestamptz NOT NULL DEFAULT now()
 );
+
+-- Varias operaciones reservadas juntas comparten "grupo": una sola compra, una
+-- sola transferencia y un solo comprobante. Las compras de un número viejas no
+-- tienen grupo y se identifican por su token.
+ALTER TABLE operaciones ADD COLUMN IF NOT EXISTS grupo text;
+CREATE INDEX IF NOT EXISTS operaciones_grupo ON operaciones (grupo);
