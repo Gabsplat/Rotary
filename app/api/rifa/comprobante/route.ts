@@ -11,11 +11,11 @@ export async function POST(request: Request) {
       throw new ErrorRifa("Falta el comprobante.");
     if (archivo.size > MAX_COMPROBANTE)
       throw new ErrorRifa("El comprobante supera los 4 MB.");
-    const numero = await adjuntarComprobante(token, {
+    const numeros = await adjuntarComprobante(token, {
       nombre: archivo.name,
       datos: Buffer.from(await archivo.arrayBuffer()),
     });
-    return NextResponse.json({ numero });
+    return NextResponse.json({ numeros });
   } catch (error) {
     return responderError(error);
   }

@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         reserva: {
-          numero: reserva.numero,
+          numeros: reserva.numeros,
           estado: reserva.estado,
           venceEn: reserva.vence_en,
           alias,

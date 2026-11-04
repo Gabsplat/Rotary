@@ -135,6 +135,12 @@ export function ListaOperaciones({
                         {operacion.rendido ? "Rendido" : "Sin rendir"}
                       </span>
                     )}
+                  {operacion.compra.length > 1 && (
+                    <span className="rounded-full bg-gold-rotary/25 px-3 py-1">
+                      Compra de {operacion.compra.length}:{" "}
+                      {operacion.compra.join(", ")}
+                    </span>
+                  )}
                   {operacion.prueba && (
                     <span className="rounded-full border border-ink/15 px-3 py-1 text-ink/50">
                       Prueba
@@ -163,10 +169,16 @@ export function ListaOperaciones({
                   <input type="hidden" name="id" value={operacion.id} />
                   <input type="hidden" name="volver" value={volver} />
                   <BotonConfirmar
-                    pregunta={`¿Confirmás que ingresó el pago del número ${operacion.numero}?`}
+                    pregunta={
+                      operacion.compra.length > 1
+                        ? `Es una sola transferencia por ${operacion.compra.length} números (${operacion.compra.join(", ")}). ¿Confirmás que ingresó el pago completo? Se confirman todos juntos.`
+                        : `¿Confirmás que ingresó el pago del número ${operacion.numero}?`
+                    }
                     className={`${botonChico} bg-blue-rotary text-white hover:bg-ink`}
                   >
-                    Confirmar pago
+                    {operacion.compra.length > 1
+                      ? `Confirmar pago (${operacion.compra.length})`
+                      : "Confirmar pago"}
                   </BotonConfirmar>
                 </form>
               )}
