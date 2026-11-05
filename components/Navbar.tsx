@@ -11,7 +11,17 @@ const links = [
   { href: "/#sumarte", label: "Por qué sumarte" },
   { href: "/#club", label: "El club" },
   { href: "/maraton-2026", label: "Maratón" },
+  { href: "/rifa", label: "Rifa", destacado: true },
 ];
+
+function Destello() {
+  return (
+    <span className="relative ml-2 inline-flex h-2 w-2 align-middle">
+      <span className="absolute inset-0 animate-ping rounded-full bg-gold-rotary opacity-60 motion-reduce:hidden" />
+      <span className="relative h-2 w-2 rounded-full bg-gold-rotary" />
+    </span>
+  );
+}
 
 export default function Navbar() {
   const [abierto, setAbierto] = useState(false);
@@ -37,6 +47,7 @@ export default function Navbar() {
                 href={link.href}
               >
                 {link.label}
+                {link.destacado && <Destello />}
               </Link>
             </li>
           ))}
@@ -70,6 +81,7 @@ export default function Navbar() {
                   onClick={() => setAbierto(false)}
                 >
                   {link.label}
+                  {link.destacado && <Destello />}
                 </Link>
               </li>
             ))}

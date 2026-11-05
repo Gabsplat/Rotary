@@ -4,6 +4,7 @@ import Container from "@/components/Container";
 import { Eyebrow } from "@/components/ui";
 import type { EstadoPublico } from "@/lib/rifa";
 import { Check, Copy, Dices, Search, X } from "lucide-react";
+import "./rifa.css";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Boleto from "./Boleto";
 import Confeti from "./Confeti";

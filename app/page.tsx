@@ -1,15 +1,20 @@
 import Container from "@/components/Container";
 import Reveal from "@/components/Reveal";
+import RifaDestacada from "@/components/RifaDestacada";
 import { Eyebrow, PillLink, WHATSAPP } from "@/components/ui";
 import { ArrowRight, HeartHandshake, LucideIcon, Trees } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+// La invitación a la rifa lee la base: la página se regenera cada minuto.
+export const revalidate = 60;
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
       <Hero />
       <Valores />
+      <RifaDestacada />
       <Manifiesto />
       <PorQueSumarte />
       <Proyectos />

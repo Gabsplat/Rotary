@@ -1,5 +1,6 @@
 "use client";
 
+import "./rifa.css";
 import React, { useRef } from "react";
 
 // Boleto que se inclina y brilla siguiendo al puntero. La inclinación se

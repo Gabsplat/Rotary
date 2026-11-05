@@ -1,7 +1,6 @@
 import { estadoPublico, obtenerConfig, vendedoresPublicos } from "@/lib/rifa";
 import type { Metadata } from "next";
 import Rifa from "./Rifa";
-import "./rifa.css";
 
 export const dynamic = "force-dynamic";
 
